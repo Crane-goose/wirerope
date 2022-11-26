@@ -1,0 +1,15 @@
+
+编译时，选　USE_USB_OTG_HS,USE_EMBEDDED_PHY
+
+1.修改 usb_bsp.c
+ void USB_OTG_BSP_DriveVBUS(USB_OTG_CORE_HANDLE *pdev, uint8_t state)
+ 安富莱STM32-F4 不支持U盘电源的控制。
+
+2. main() 主循环需要轮流执行 USBH_Process() 函数。改函数位于 Usbh_core.c
+	void USBH_Process(USB_OTG_CORE_HANDLE *pdev , USBH_HOST *phost)
+
+3. 在 usbh_usr.c 中定义2个全局变量：
+	USB_OTG_CORE_HANDLE          USB_OTG_Core;
+	USBH_HOST                     USB_Host
+
+4. 将 LCD_Log 等显示函数替代为 usb_printf， 输出到串口1
