@@ -219,7 +219,7 @@
                   |L1.224|
                           DCD      0x40007000
                   |L1.228|
-                          DCD      0x07405408
+                          DCD      0x07405419
                   |L1.232|
                           DCD      0x40023c00
 
@@ -365,7 +365,7 @@
                   |L2.180|
                           DCD      SystemCoreClock
                   |L2.184|
-                          DCD      0x007a1200
+                          DCD      0x017d7840
                   |L2.188|
                           DCD      AHBPrescTable
 

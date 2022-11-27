@@ -591,434 +591,20 @@
                           AREA ||i.AD7606_ISR||, CODE, READONLY, ALIGN=2
 
                   AD7606_ISR PROC
-;;;708    
-;;;709    void AD7606_ISR(void)
+;;;637    
+;;;638    void AD7606_ISR(void)
 000000  b500              PUSH     {lr}
-;;;710    {
-;;;711    	
-;;;712    	
-;;;713    	
-;;;714    	AD7606_ReadNowAdc();
+;;;639    {
+;;;640    	AD7606_ReadNowAdc();
 000002  f7fffffe          BL       AD7606_ReadNowAdc
-;;;715    	
-;;;716    	biaozhi = 1;
+;;;641    	biaozhi = 1;
 000006  2001              MOVS     r0,#1
 000008  4901              LDR      r1,|L4.16|
 00000a  7008              STRB     r0,[r1,#0]
-;;;717    	
-;;;718    //	
-;;;719    //	
-;;;720    //	channel[0] = g_tAD7606.sNowAdc[0]*5000/32768;
-;;;721    //	channel[1] = g_tAD7606.sNowAdc[1]*5000/32768;
-;;;722    //	channel[2] = g_tAD7606.sNowAdc[2]*5000/32768;
-;;;723    //	channel[3] = g_tAD7606.sNowAdc[3]*5000/32768;
-;;;724    //	channel[4] = g_tAD7606.sNowAdc[4]*5000/32768;
-;;;725    //	channel[5] = g_tAD7606.sNowAdc[5]*5000/32768;
-;;;726    //	sumchannel = channel[0]+channel[1]+channel[2]+channel[3]+channel[4]+channel[5];
-;;;727    //	num=circle_count*2400+TIM_GetCounter(TIM4);
-;;;728    //	len = num*80*3.14/4/600;
-;;;729    
-;;;730    //	sprintf(BUF8, " %d" , len);
-;;;731    //	sprintf(BUF0, " %d" , channel[0]);
-;;;732    //	sprintf(BUF1, " %d" , channel[1]);
-;;;733    //	sprintf(BUF2, " %d" , channel[2]);
-;;;734    //	sprintf(BUF3, " %d" , channel[3]);
-;;;735    //	sprintf(BUF4, " %d" , channel[4]);
-;;;736    //	sprintf(BUF5, " %d" , channel[5]);
-;;;737    //	sprintf(BUF6, " %d" , sumchannel);
-;;;738    //	
-;;;739    //	if(Mark==280)
-;;;740    //	{
-;;;741    //		Mark=0;
-;;;742    //		
-;;;743    //	}
-;;;744    //	//一次54个字符
-;;;745    //	if(Mark<140)
-;;;746    //	{
-;;;747    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[0];
-;;;748    //		g_tAdcFifo.usWrite1++;
-;;;749    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[1];
-;;;750    //		g_tAdcFifo.usWrite1++;
-;;;751    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[2];
-;;;752    //		g_tAdcFifo.usWrite1++;
-;;;753    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[3];
-;;;754    //		g_tAdcFifo.usWrite1++;
-;;;755    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[4];
-;;;756    //		g_tAdcFifo.usWrite1++;
-;;;757    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[5];
-;;;758    //		g_tAdcFifo.usWrite1++;
-;;;759    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[6];
-;;;760    //		g_tAdcFifo.usWrite1++;
-;;;761    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[7];
-;;;762    //		g_tAdcFifo.usWrite1++;
-;;;763    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[8];
-;;;764    //		g_tAdcFifo.usWrite1++;
-;;;765    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[9];
-;;;766    //		g_tAdcFifo.usWrite1++;
-;;;767    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;768    //		g_tAdcFifo.usWrite1++;
-;;;769    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF0[0];
-;;;770    //		g_tAdcFifo.usWrite1++;
-;;;771    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF0[1];
-;;;772    //		g_tAdcFifo.usWrite1++;
-;;;773    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF0[2];
-;;;774    //		g_tAdcFifo.usWrite1++;
-;;;775    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF0[3];
-;;;776    //		g_tAdcFifo.usWrite1++;
-;;;777    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF0[4];
-;;;778    //		g_tAdcFifo.usWrite1++;
-;;;779    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;780    //		g_tAdcFifo.usWrite1++;
-;;;781    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF1[0];
-;;;782    //		g_tAdcFifo.usWrite1++;
-;;;783    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF1[1];
-;;;784    //		g_tAdcFifo.usWrite1++;
-;;;785    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF1[2];
-;;;786    //		g_tAdcFifo.usWrite1++;
-;;;787    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF1[3];
-;;;788    //		g_tAdcFifo.usWrite1++;
-;;;789    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF1[4];
-;;;790    //		g_tAdcFifo.usWrite1++;
-;;;791    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;792    //		g_tAdcFifo.usWrite1++;
-;;;793    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF2[0];
-;;;794    //		g_tAdcFifo.usWrite1++;
-;;;795    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF2[1];
-;;;796    //		g_tAdcFifo.usWrite1++;
-;;;797    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF2[2];
-;;;798    //		g_tAdcFifo.usWrite1++;
-;;;799    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF2[3];
-;;;800    //		g_tAdcFifo.usWrite1++;
-;;;801    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF2[4];
-;;;802    //		g_tAdcFifo.usWrite1++;
-;;;803    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;804    //		g_tAdcFifo.usWrite1++;	
-;;;805    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF3[0];
-;;;806    //		g_tAdcFifo.usWrite1++;
-;;;807    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF3[1];
-;;;808    //		g_tAdcFifo.usWrite1++;
-;;;809    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF3[2];
-;;;810    //		g_tAdcFifo.usWrite1++;
-;;;811    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF3[3];
-;;;812    //		g_tAdcFifo.usWrite1++;
-;;;813    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF3[4];
-;;;814    //		g_tAdcFifo.usWrite1++;
-;;;815    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;816    //		g_tAdcFifo.usWrite1++;
-;;;817    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF4[0];
-;;;818    //		g_tAdcFifo.usWrite1++;
-;;;819    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF4[1];
-;;;820    //		g_tAdcFifo.usWrite1++;
-;;;821    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF4[2];
-;;;822    //		g_tAdcFifo.usWrite1++;
-;;;823    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF4[3];
-;;;824    //		g_tAdcFifo.usWrite1++;
-;;;825    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF4[4];
-;;;826    //		g_tAdcFifo.usWrite1++;
-;;;827    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;828    //		g_tAdcFifo.usWrite1++;
-;;;829    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF5[0];
-;;;830    //		g_tAdcFifo.usWrite1++;
-;;;831    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF5[1];
-;;;832    //		g_tAdcFifo.usWrite1++;
-;;;833    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF5[2];
-;;;834    //		g_tAdcFifo.usWrite1++;
-;;;835    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF5[3];
-;;;836    //		g_tAdcFifo.usWrite1++;
-;;;837    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF5[4];
-;;;838    //		g_tAdcFifo.usWrite1++;
-;;;839    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;840    //		g_tAdcFifo.usWrite1++;
-;;;841    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[0];
-;;;842    //		g_tAdcFifo.usWrite1++;
-;;;843    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[1];
-;;;844    //		g_tAdcFifo.usWrite1++;
-;;;845    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[2];
-;;;846    //		g_tAdcFifo.usWrite1++;
-;;;847    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[3];
-;;;848    //		g_tAdcFifo.usWrite1++;
-;;;849    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[4];
-;;;850    //		g_tAdcFifo.usWrite1++;
-;;;851    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[5];
-;;;852    //		g_tAdcFifo.usWrite1++;
-;;;853    //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = '\n';
-;;;854    //		g_tAdcFifo.usWrite1++;
-;;;855    
-;;;856    ////		strcat (g_tAdcFifo.sBuf1,BUF8);
-;;;857    ////		strcat (g_tAdcFifo.sBuf1,",");
-;;;858    ////		strcat (g_tAdcFifo.sBuf1,BUF0);
-;;;859    ////		strcat (g_tAdcFifo.sBuf1,",");
-;;;860    ////		strcat (g_tAdcFifo.sBuf1,BUF1);
-;;;861    ////		strcat (g_tAdcFifo.sBuf1,",");
-;;;862    ////		strcat (g_tAdcFifo.sBuf1,BUF2);
-;;;863    ////		strcat (g_tAdcFifo.sBuf1,",");
-;;;864    ////		strcat (g_tAdcFifo.sBuf1,BUF3);
-;;;865    ////		strcat (g_tAdcFifo.sBuf1,",");
-;;;866    ////		strcat (g_tAdcFifo.sBuf1,BUF4);
-;;;867    ////		strcat (g_tAdcFifo.sBuf1,",");
-;;;868    ////		strcat (g_tAdcFifo.sBuf1,BUF5);
-;;;869    ////		strcat (g_tAdcFifo.sBuf1,",");
-;;;870    ////		strcat (g_tAdcFifo.sBuf1,BUF6);
-;;;871    ////		strcat (g_tAdcFifo.sBuf1,"\n");
-;;;872    //	}
-;;;873    //	if(Mark>=140&&Mark<280)
-;;;874    //	{
-;;;875    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[0];
-;;;876    //		g_tAdcFifo.usWrite2++;
-;;;877    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[1];
-;;;878    //		g_tAdcFifo.usWrite2++;
-;;;879    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[2];
-;;;880    //		g_tAdcFifo.usWrite2++;
-;;;881    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[3];
-;;;882    //		g_tAdcFifo.usWrite2++;
-;;;883    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[4];
-;;;884    //		g_tAdcFifo.usWrite2++;
-;;;885    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[5];
-;;;886    //		g_tAdcFifo.usWrite2++;
-;;;887    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[6];
-;;;888    //		g_tAdcFifo.usWrite2++;
-;;;889    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[7];
-;;;890    //		g_tAdcFifo.usWrite2++;
-;;;891    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[8];
-;;;892    //		g_tAdcFifo.usWrite2++;
-;;;893    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[9];
-;;;894    //		g_tAdcFifo.usWrite2++;
-;;;895    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;896    //		g_tAdcFifo.usWrite2++;
-;;;897    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF0[0];
-;;;898    //		g_tAdcFifo.usWrite2++;
-;;;899    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF0[1];
-;;;900    //		g_tAdcFifo.usWrite2++;
-;;;901    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF0[2];
-;;;902    //		g_tAdcFifo.usWrite2++;
-;;;903    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF0[3];
-;;;904    //		g_tAdcFifo.usWrite2++;
-;;;905    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF0[4];
-;;;906    //		g_tAdcFifo.usWrite2++;
-;;;907    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;908    //		g_tAdcFifo.usWrite2++;
-;;;909    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF1[0];
-;;;910    //		g_tAdcFifo.usWrite2++;
-;;;911    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF1[1];
-;;;912    //		g_tAdcFifo.usWrite2++;
-;;;913    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF1[2];
-;;;914    //		g_tAdcFifo.usWrite2++;
-;;;915    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF1[3];
-;;;916    //		g_tAdcFifo.usWrite2++;
-;;;917    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF1[4];
-;;;918    //		g_tAdcFifo.usWrite2++;
-;;;919    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;920    //		g_tAdcFifo.usWrite2++;
-;;;921    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF2[0];
-;;;922    //		g_tAdcFifo.usWrite2++;
-;;;923    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF2[1];
-;;;924    //		g_tAdcFifo.usWrite2++;
-;;;925    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF2[2];
-;;;926    //		g_tAdcFifo.usWrite2++;
-;;;927    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF2[3];
-;;;928    //		g_tAdcFifo.usWrite2++;
-;;;929    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF2[4];
-;;;930    //		g_tAdcFifo.usWrite2++;
-;;;931    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;932    //		g_tAdcFifo.usWrite2++;	
-;;;933    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF3[0];
-;;;934    //		g_tAdcFifo.usWrite2++;
-;;;935    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF3[1];
-;;;936    //		g_tAdcFifo.usWrite2++;
-;;;937    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF3[2];
-;;;938    //		g_tAdcFifo.usWrite2++;
-;;;939    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF3[3];
-;;;940    //		g_tAdcFifo.usWrite2++;
-;;;941    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF3[4];
-;;;942    //		g_tAdcFifo.usWrite2++;
-;;;943    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;944    //		g_tAdcFifo.usWrite2++;
-;;;945    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF4[0];
-;;;946    //		g_tAdcFifo.usWrite2++;
-;;;947    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF4[1];
-;;;948    //		g_tAdcFifo.usWrite2++;
-;;;949    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF4[2];
-;;;950    //		g_tAdcFifo.usWrite2++;
-;;;951    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF4[3];
-;;;952    //		g_tAdcFifo.usWrite2++;
-;;;953    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF4[4];
-;;;954    //		g_tAdcFifo.usWrite2++;
-;;;955    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;956    //		g_tAdcFifo.usWrite2++;
-;;;957    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF5[0];
-;;;958    //		g_tAdcFifo.usWrite2++;
-;;;959    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF5[1];
-;;;960    //		g_tAdcFifo.usWrite2++;
-;;;961    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF5[2];
-;;;962    //		g_tAdcFifo.usWrite2++;
-;;;963    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF5[3];
-;;;964    //		g_tAdcFifo.usWrite2++;
-;;;965    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF5[4];
-;;;966    //		g_tAdcFifo.usWrite2++;
-;;;967    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;968    //		g_tAdcFifo.usWrite2++;
-;;;969    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[0];
-;;;970    //		g_tAdcFifo.usWrite2++;
-;;;971    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[1];
-;;;972    //		g_tAdcFifo.usWrite2++;
-;;;973    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[2];
-;;;974    //		g_tAdcFifo.usWrite2++;
-;;;975    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[3];
-;;;976    //		g_tAdcFifo.usWrite2++;
-;;;977    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[4];
-;;;978    //		g_tAdcFifo.usWrite2++;
-;;;979    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[5];
-;;;980    //		g_tAdcFifo.usWrite2++;
-;;;981    //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = '\n';
-;;;982    //		g_tAdcFifo.usWrite2++;		
-;;;983    //		
-;;;984    
-;;;985    ////		strcat (g_tAdcFifo.sBuf2,BUF8);
-;;;986    ////		strcat (g_tAdcFifo.sBuf2,",");
-;;;987    ////		strcat (g_tAdcFifo.sBuf2,BUF0);
-;;;988    ////		strcat (g_tAdcFifo.sBuf2,",");
-;;;989    ////		strcat (g_tAdcFifo.sBuf2,BUF1);
-;;;990    ////		strcat (g_tAdcFifo.sBuf2,",");
-;;;991    ////		strcat (g_tAdcFifo.sBuf2,BUF2);
-;;;992    ////		strcat (g_tAdcFifo.sBuf2,",");
-;;;993    ////		strcat (g_tAdcFifo.sBuf2,BUF3);
-;;;994    ////		strcat (g_tAdcFifo.sBuf2,",");
-;;;995    ////		strcat (g_tAdcFifo.sBuf2,BUF4);
-;;;996    ////		strcat (g_tAdcFifo.sBuf2,",");
-;;;997    ////		strcat (g_tAdcFifo.sBuf2,BUF5);
-;;;998    ////		strcat (g_tAdcFifo.sBuf2,",");
-;;;999    ////		strcat (g_tAdcFifo.sBuf2,BUF6);
-;;;1000   ////		strcat (g_tAdcFifo.sBuf2,"\n");
-;;;1001   //	}
-;;;1002   
-;;;1003   //	Mark++;
-;;;1004   //	
-;;;1005   //	if(Mark == 140)
-;;;1006   //	{
-;;;1007   //		Calibration = 1;
-;;;1008   // 		g_tAdcFifo.usWrite1 = 0;
-;;;1009   //	
-;;;1010   //	}
-;;;1011   //		if(Mark == 280)
-;;;1012   //	{
-;;;1013   //		Calibration = 2;
-;;;1014   // 		g_tAdcFifo.usWrite2 = 0;
-;;;1015   //		
-;;;1016   //	}
-;;;1017   
-;;;1018   //	
-;;;1019   	
-;;;1020   
-;;;1021   	
-;;;1022   	
-;;;1023   	
-;;;1024   //		if(Mark==680)
-;;;1025   //	{
-;;;1026   //		Mark=0;
-;;;1027   //		
-;;;1028   //	}
-;;;1029   //	
-;;;1030   //	
-;;;1031   //	if(Mark<340)
-;;;1032   //	{
-;;;1033   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[0];
-;;;1034   //		g_tAdcFifo.usWrite1++;
-;;;1035   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;1036   //		g_tAdcFifo.usWrite1++;
-;;;1037   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[1];
-;;;1038   //		g_tAdcFifo.usWrite1++;
-;;;1039   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;1040   //		g_tAdcFifo.usWrite1++;
-;;;1041   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[2];
-;;;1042   //		g_tAdcFifo.usWrite1++;
-;;;1043   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;1044   //		g_tAdcFifo.usWrite1++;
-;;;1045   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[3];
-;;;1046   //		g_tAdcFifo.usWrite1++;
-;;;1047   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;1048   //		g_tAdcFifo.usWrite1++;	
-;;;1049   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[4];
-;;;1050   //		g_tAdcFifo.usWrite1++;
-;;;1051   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-;;;1052   //		g_tAdcFifo.usWrite1++;
-;;;1053   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[5];
-;;;1054   //		g_tAdcFifo.usWrite1++;
-;;;1055   //		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = '\n';
-;;;1056   //		g_tAdcFifo.usWrite1++;
-;;;1057   //		
-;;;1058   //	}
-;;;1059   //	if(Mark>=340&&Mark<680)
-;;;1060   //	{
-;;;1061   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[0];
-;;;1062   //		g_tAdcFifo.usWrite2++;
-;;;1063   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;1064   //		g_tAdcFifo.usWrite2++;
-;;;1065   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[1];
-;;;1066   //		g_tAdcFifo.usWrite2++;
-;;;1067   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;1068   //		g_tAdcFifo.usWrite2++;
-;;;1069   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[2];
-;;;1070   //		g_tAdcFifo.usWrite2++;
-;;;1071   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;1072   //		g_tAdcFifo.usWrite2++;		
-;;;1073   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[3];
-;;;1074   //		g_tAdcFifo.usWrite2++;
-;;;1075   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;1076   //		g_tAdcFifo.usWrite2++;
-;;;1077   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[4];
-;;;1078   //		g_tAdcFifo.usWrite2++;
-;;;1079   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;1080   //		g_tAdcFifo.usWrite2++;
-;;;1081   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[5];
-;;;1082   //		g_tAdcFifo.usWrite2++;
-;;;1083   //		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-;;;1084   //		g_tAdcFifo.usWrite2++;
-;;;1085   //	}
-;;;1086   //	if(Mark == 342)
-;;;1087   //	{
-;;;1088   //		Calibration = 1;
-;;;1089   //		g_tAdcFifo.usWrite1 = 0;
-;;;1090   //		
-;;;1091   //	}
-;;;1092   //		if(Mark == 2)
-;;;1093   //	{
-;;;1094   //		Calibration = 2;
-;;;1095   //		g_tAdcFifo.usWrite2 = 0;
-;;;1096   //		
-;;;1097   //	}
-;;;1098   //	Mark++;
-;;;1099   	
-;;;1100   	
-;;;1101   	
-;;;1102   
-;;;1103   	
-;;;1104   	
-;;;1105   	
-;;;1106   	
-;;;1107   	
-;;;1108   //	uint8_t i;
-;;;1109   
-;;;1110   //	AD7606_ReadNowAdc();
-;;;1111   
-;;;1112   //	for (i = 0; i < 8; i++)
-;;;1113   //	{
-;;;1114   //		g_tAdcFifo.sBuf[g_tAdcFifo.usWrite] = g_tAD7606.sNowAdc[i];
-;;;1115   //		if (++g_tAdcFifo.usWrite >= ADC_FIFO_SIZE)
-;;;1116   //		{
-;;;1117   //			g_tAdcFifo.usWrite = 0;
-;;;1118   //		}
-;;;1119   //		if (g_tAdcFifo.usCount < ADC_FIFO_SIZE)
-;;;1120   //		{
-;;;1121   //			g_tAdcFifo.usCount++;
-;;;1122   //		}
-;;;1123   //		else
-;;;1124   //		{
-;;;1125   //			g_tAdcFifo.ucFull = 1;		/* FIFO 满，主程序来不及处理数据 */
-;;;1126   //		}
-;;;1127   //	}
-;;;1128   }
+;;;642    	
+;;;643    }
 00000c  bd00              POP      {pc}
-;;;1129   
+;;;644    
                           ENDP
 
 00000e  0000              DCW      0x0000
@@ -1339,106 +925,100 @@
                           AREA ||i.AD7606_StartRecord||, CODE, READONLY, ALIGN=1
 
                   AD7606_StartRecord PROC
-;;;634    */
-;;;635    void AD7606_StartRecord(uint32_t _ulFreq)
+;;;574    */
+;;;575    void AD7606_StartRecord(uint32_t _ulFreq)
 000000  b510              PUSH     {r4,lr}
-;;;636    {
+;;;576    {
 000002  4604              MOV      r4,r0
-;;;637    	AD7606_StopRecord();
+;;;577    	AD7606_StopRecord();
 000004  f7fffffe          BL       AD7606_StopRecord
-;;;638    
-;;;639    	AD7606_Reset();					/* 复位硬件 */
+;;;578    
+;;;579    	AD7606_Reset();					/* 复位硬件 */
 000008  f7fffffe          BL       AD7606_Reset
-;;;640    	AD7606_StartConvst();			/* 启动采样，避免第1组数据全0的问题 */
+;;;580    	AD7606_StartConvst();			/* 启动采样，避免第1组数据全0的问题 */
 00000c  f7fffffe          BL       AD7606_StartConvst
-;;;641    
-;;;642    //	g_tAdcFifo.usRead = 0;			/* 必须在开启TIM2之前清0 */
-;;;643    //	g_tAdcFifo.usWrite = 0;
-;;;644    //	g_tAdcFifo.usCount = 0;
-;;;645    //	g_tAdcFifo.ucFull = 0;
-;;;646    
-;;;647    	AD7606_EnterAutoMode(_ulFreq);
+;;;581    	AD7606_EnterAutoMode(_ulFreq);
 000010  4620              MOV      r0,r4
 000012  f7fffffe          BL       AD7606_EnterAutoMode
-;;;648    }
+;;;582    }
 000016  bd10              POP      {r4,pc}
-;;;649    
+;;;583    
                           ENDP
 
 
                           AREA ||i.AD7606_StopRecord||, CODE, READONLY, ALIGN=2
 
                   AD7606_StopRecord PROC
-;;;657    */
-;;;658    void AD7606_StopRecord(void)
+;;;591    */
+;;;592    void AD7606_StopRecord(void)
 000000  b51c              PUSH     {r2-r4,lr}
-;;;659    {
-;;;660    	TIM_Cmd(TIM5, DISABLE);
+;;;593    {
+;;;594    	TIM_Cmd(TIM5, DISABLE);
 000002  2100              MOVS     r1,#0
 000004  4816              LDR      r0,|L11.96|
 000006  f7fffffe          BL       TIM_Cmd
-;;;661    
-;;;662    	/* 将PH12 重新配置为普通输出口 */
-;;;663    	{
-;;;664    		GPIO_InitTypeDef GPIO_InitStructure;
-;;;665    
-;;;666    		/* 使能 GPIO时钟 */
-;;;667    		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOH, ENABLE);
+;;;595    
+;;;596    	/* 将PH12 重新配置为普通输出口 */
+;;;597    	{
+;;;598    		GPIO_InitTypeDef GPIO_InitStructure;
+;;;599    
+;;;600    		/* 使能 GPIO时钟 */
+;;;601    		RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOH, ENABLE);
 00000a  2101              MOVS     r1,#1
 00000c  2080              MOVS     r0,#0x80
 00000e  f7fffffe          BL       RCC_AHB1PeriphClockCmd
-;;;668    
-;;;669    		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+;;;602    
+;;;603    		GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 000012  2001              MOVS     r0,#1
 000014  f88d0004          STRB     r0,[sp,#4]
-;;;670    		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+;;;604    		GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 000018  2003              MOVS     r0,#3
 00001a  f88d0005          STRB     r0,[sp,#5]
-;;;671    		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+;;;605    		GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 00001e  2000              MOVS     r0,#0
 000020  f88d0006          STRB     r0,[sp,#6]
-;;;672    		GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
+;;;606    		GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
 000024  f88d0007          STRB     r0,[sp,#7]
-;;;673    
-;;;674    		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
+;;;607    
+;;;608    		GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
 000028  f44f5080          MOV      r0,#0x1000
 00002c  9000              STR      r0,[sp,#0]
-;;;675    		GPIO_Init(GPIOH, &GPIO_InitStructure);
+;;;609    		GPIO_Init(GPIOH, &GPIO_InitStructure);
 00002e  4669              MOV      r1,sp
 000030  480c              LDR      r0,|L11.100|
 000032  f7fffffe          BL       GPIO_Init
-;;;676    	}
-;;;677    
-;;;678    	/* 配置PI6, 禁止 BUSY 作为中断输入口 */
-;;;679    	{
-;;;680    		EXTI_InitTypeDef   EXTI_InitStructure;
-;;;681    
-;;;682    		/* Configure EXTI Line6 */
-;;;683    		EXTI_InitStructure.EXTI_Line = EXTI_Line6;
+;;;610    	}
+;;;611    
+;;;612    	/* 配置PI6, 禁止 BUSY 作为中断输入口 */
+;;;613    	{
+;;;614    		EXTI_InitTypeDef   EXTI_InitStructure;
+;;;615    
+;;;616    		/* Configure EXTI Line6 */
+;;;617    		EXTI_InitStructure.EXTI_Line = EXTI_Line6;
 000036  2040              MOVS     r0,#0x40
 000038  9000              STR      r0,[sp,#0]
-;;;684    		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+;;;618    		EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
 00003a  2000              MOVS     r0,#0
 00003c  f88d0004          STRB     r0,[sp,#4]
-;;;685    		EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+;;;619    		EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
 000040  200c              MOVS     r0,#0xc
 000042  f88d0005          STRB     r0,[sp,#5]
-;;;686    		EXTI_InitStructure.EXTI_LineCmd = DISABLE;
+;;;620    		EXTI_InitStructure.EXTI_LineCmd = DISABLE;
 000046  2000              MOVS     r0,#0
 000048  f88d0006          STRB     r0,[sp,#6]
-;;;687    		EXTI_Init(&EXTI_InitStructure);
+;;;621    		EXTI_Init(&EXTI_InitStructure);
 00004c  4668              MOV      r0,sp
 00004e  f7fffffe          BL       EXTI_Init
-;;;688    	}
-;;;689    	CONVST_1();					/* 启动转换的GPIO平时设置为高 */
+;;;622    	}
+;;;623    	CONVST_1();					/* 启动转换的GPIO平时设置为高 */
 000052  f44f5080          MOV      r0,#0x1000
 000056  4903              LDR      r1,|L11.100|
 000058  3118              ADDS     r1,r1,#0x18
 00005a  8008              STRH     r0,[r1,#0]
-;;;690    
-;;;691    }
+;;;624    
+;;;625    }
 00005c  bd1c              POP      {r2-r4,pc}
-;;;692    
+;;;626    
                           ENDP
 
 00005e  0000              DCW      0x0000
@@ -1450,27 +1030,27 @@
                           AREA ||i.EXTI9_5_IRQHandler||, CODE, READONLY, ALIGN=1
 
                   EXTI9_5_IRQHandler PROC
-;;;1138   #ifndef EXTI9_5_ISR_MOVE_OUT		/* bsp.h 中定义此行，表示本函数移到 stam32f4xx_it.c。 避免重复定义 */
-;;;1139   void EXTI9_5_IRQHandler(void)
+;;;653    #ifndef EXTI9_5_ISR_MOVE_OUT		/* bsp.h 中定义此行，表示本函数移到 stam32f4xx_it.c。 避免重复定义 */
+;;;654    void EXTI9_5_IRQHandler(void)
 000000  b510              PUSH     {r4,lr}
-;;;1140   {
-;;;1141   	if (EXTI_GetITStatus(EXTI_Line6) != RESET)
+;;;655    {
+;;;656    	if (EXTI_GetITStatus(EXTI_Line6) != RESET)
 000002  2040              MOVS     r0,#0x40
 000004  f7fffffe          BL       EXTI_GetITStatus
 000008  b120              CBZ      r0,|L12.20|
-;;;1142   	{
-;;;1143   		AD7606_ISR();
+;;;657    	{
+;;;658    		AD7606_ISR();
 00000a  f7fffffe          BL       AD7606_ISR
-;;;1144   
-;;;1145   		/* Clear the EXTI line 6 pending bit */
-;;;1146   		EXTI_ClearITPendingBit(EXTI_Line6);
+;;;659    
+;;;660    		/* Clear the EXTI line 6 pending bit */
+;;;661    		EXTI_ClearITPendingBit(EXTI_Line6);
 00000e  2040              MOVS     r0,#0x40
 000010  f7fffffe          BL       EXTI_ClearITPendingBit
                   |L12.20|
-;;;1147   	}
-;;;1148   }
+;;;662    	}
+;;;663    }
 000014  bd10              POP      {r4,pc}
-;;;1149   #endif
+;;;664    #endif
                           ENDP
 
 

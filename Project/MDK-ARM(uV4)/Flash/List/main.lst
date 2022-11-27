@@ -1,22 +1,4 @@
 L 1 "..\..\User\main.c"
-N/*
-N*********************************************************************************************************
-N*
-N*	模块名称 : 主程序模块。
-N*	文件名称 : main.c
-N*	版    本 : V1.2
-N*	说    明 : V5-107c_FatFS文件系统例程（U盘）
-N*	修改记录 :
-N*		版本号  日期       作者    说明
-N*		v1.0    2013-02-01 armfly  首发
-N*		v1.1    2013-06-20 armfly  升级BSP模块;更换读取串口命令的写法，不采用 getchar() 阻塞方式。
-N*		V1.2    2014-02-28 armfly  升级固件库到V1.3.0
-N*
-N*	Copyright (C), 2013-2014, 安富莱电子 www.armfly.com
-N*
-N*********************************************************************************************************
-N*/
-N
 N#include "bsp.h"				/* 底层硬件驱动 */
 L 1 "..\..\User\bsp_stm32f4xx\bsp.h" 1
 N/*
@@ -182,8 +164,8 @@ N  */
 N
 N#if !defined  (HSE_VALUE) 
 X#if !0L 
-N//  #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
-N  #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
+N   #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
+N//    #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
 N#endif /* HSE_VALUE */
 N
 N/**
@@ -14309,8 +14291,8 @@ S        can define the HSE value in your toolchain compiler preprocessor.
 S  */           
 S
 S#if !defined  (HSE_VALUE) 
-S//  #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
-S  #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
+S   #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
+S//    #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
 S#endif /* HSE_VALUE */
 S
 S/**
@@ -37068,7 +37050,7 @@ N
 N#endif
 N
 N/***************************** 安富莱电子 www.armfly.com (END OF FILE) *********************************/
-L 20 "..\..\User\main.c" 2
+L 2 "..\..\User\main.c" 2
 N#include "demo_fatfs.h"
 L 1 "..\..\User\demo_fatfs.h" 1
 N/*
@@ -37094,8 +37076,8 @@ N
 N#endif
 N
 N
-L 21 "..\..\User\main.c" 2
-N#include "ff.h"			/* FatFS文件系统模块*/
+L 3 "..\..\User\main.c" 2
+N#include "ff.h"			        /* FatFS文件系统模块*/
 L 1 "..\..\User\FatFS\src\ff.h" 1
 N/*---------------------------------------------------------------------------/
 N/  FatFs - FAT file system module include file  R0.09b    (C)ChaN, 2013
@@ -37786,7 +37768,7 @@ S}
 N#endif
 N
 N#endif /* _FATFS */
-L 22 "..\..\User\main.c" 2
+L 4 "..\..\User\main.c" 2
 N#include "usbh_bsp_msc.h"
 L 1 "..\..\User\usbh_mass_storage\usbh_bsp_msc.h" 1
 N/*
@@ -42398,7 +42380,7 @@ N
 N#endif
 N
 N/***************************** 安富莱电子 www.armfly.com (END OF FILE) *********************************/
-L 23 "..\..\User\main.c" 2
+L 5 "..\..\User\main.c" 2
 N#include "math.h"
 L 1 "D:\Software\keil\ARM\ARMCC\Bin\..\include\math.h" 1
 N/*
@@ -43960,37 +43942,12 @@ N
 N#endif /* __math_h */
 N
 N/* end of math.h */
-L 24 "..\..\User\main.c" 2
+L 6 "..\..\User\main.c" 2
 N
 N
-N
-N/* 定义例程名和例程发布日期 */
-N#define EXAMPLE_NAME	"V5-120_AD7606（8通道16位同步ADC）例程"
-N#define EXAMPLE_DATE	"2014-02-28"
-N#define DEMO_VER		"1.2"
-N
-N
-N#define N     9
-N#define M     9
-N//滤波相关定义1
-Nvoid AD7606_Array(void);
-Nvoid AD7606_Filter(void);
-Nvoid AD7606_Array_1(void);
-Nvoid AD7606_Filter_1(void);
-Nstatic int16_t value_buf0[N];     //中值滤波数组0
-Xstatic int16_t value_buf0[9];     
-Nstatic int16_t value_buf1[N];    //中值滤波数组1
-Xstatic int16_t value_buf1[9];    
-Nstatic int16_t value_buf2[N];     //中值滤波数组2
-Xstatic int16_t value_buf2[9];     
-Nstatic int16_t value_buf3[N];    //中值滤波数组3
-Xstatic int16_t value_buf3[9];    
-Nstatic int16_t value_buf4[N];     //中值滤波数组4
-Xstatic int16_t value_buf4[9];     
-Nstatic int16_t value_buf5[N];    //中值滤波数组5
-Xstatic int16_t value_buf5[9];    
-Nstatic int16_t value_buf6[M];     //中值滤波数组6
-Xstatic int16_t value_buf6[9];     
+Nvoid DewenSet(void);
+Nvoid SaveDate(void);
+Nvoid HandleDate(void);
 Nuint8_t count=0;
 Nuint8_t count_1=0;
 Nint biaozhi_lb=0;
@@ -44001,28 +43958,39 @@ Nint16_t sum;
 Nint16_t sum_lb;
 Nint16_t chan[6];
 N
-N//巴特沃斯滤波
-Nvoid bartworth (void);
-N
-N//float bart_a [9] = {1 , -7.6135 , 25.369 , -48.321 , 57.543 , -43.870 , 20.911 , -5.6975 , 0.67936};
-N//float bart_b [9] = {3.3756e-12 , 2.7005e-11 , 9.4518e-11 ,1.8904e-10 , 2.3629e-10 , 1.8904e-10 , 9.4518e-11 , 2.7005e-11 , 3.3756e-12};
-N//float bart_x [9];
-N//float bart_y [9];
-Ndouble bart_a [9] = {1 , -7.61353123046636 , 25.3690120949237 , -48.3207014407934 , 57.5427221157395 , 
-N											-43.8704726071429 , 20.9110761574721 , -5.69746964660762 , 0.679364557739175};
-Ndouble bart_b [9] = {3.37563310637279E-12 , 2.70050648509823E-11 , 9.45177269784381E-11 ,1.89035453956876E-10 , 
-N										2.36294317446095E-10 , 1.89035453956876E-10 , 9.45177269784381E-11 , 2.70050648509823E-11 , 3.37563310637279E-12};
-Ndouble bart_x [9];
-Ndouble bart_y [9];
-Nuint8_t bart_count_x=0;
-Nuint8_t bart_count_y=0;
-Nint32_t bart_count=0;
-N
 Nint biaozhi_bart=0;
 Nint16_t sum_lb_bart;
 N
 N
+N//uint8_t ucKeyCode;
+Nuint8_t ucRefresh = 0;
+Nuint8_t ucFifoMode =0;//1;均值 2：采集 3：停止
+N//uint16_t storage = 0;
+Nuint16_t reset = 0;
+N//int16_t sum;外部定义
+Nint32_t add[6];
+Nint16_t ave[7];
+N//int16_t chan[6];
+Nchar buffer[48] = "位置,通道1,通道2,通道3,通道4,通道5,通道6,和通道\n" ;
+Nint16_t middle = 151;
+Nint16_t end = 302;
 N
+Nuint16_t Mark = 0;
+Nuint8_t Calibration = 0;
+Nint16_t channel[6];
+Nint16_t sumchannel;
+Nint32_t num;
+Nint32_t len;
+N
+Nchar bufferSaveChannel[6][5];
+Nchar bufferSaveSum[6];
+Nchar bufferSaveLen[10];
+N
+N
+NFATFS fs;
+NFIL file;
+NDIR DirInf;
+Nuint32_t bw;
 N
 Nvoid delay_us(uint32_t delay_us)
 N{
@@ -44049,52 +44017,8 @@ N*******************************************************************************
 N*/
 Nint main(void)
 N{
-N	delay_us(100000);//短暂延时，确保外设供电
-N
-N//	uint8_t ucKeyCode;
-N	uint8_t ucRefresh = 0;
-N	uint8_t ucFifoMode =0;//1;均值 2：采集 3：停止
-N//	uint16_t storage = 0;
-N	uint16_t reset = 0;
-N	//int16_t sum;外部定义
-N	int32_t add[6];
-N	int16_t ave[7];
-N	//int16_t chan[6];
-N	char buffer[48] = "位置,通道1,通道2,通道3,通道4,通道5,通道6,和通道\n" ;
-N	int16_t middle = 151;
-N	int16_t end = 302;
-N
-N	
-N	uint16_t Mark = 0;
-N	uint8_t Calibration = 0;
-N	int16_t channel[6];
-N	int16_t sumchannel;
-N	int32_t num;
-N	int32_t len;
-N
-N
-N	char BUF0[5];
-N	char BUF1[5];
-N	char BUF2[5];
-N	char BUF3[5];
-N	char BUF4[5];
-N	char BUF5[5];
-N	char BUF6[6];
-N	char BUF8[10];
-N	
-N	FATFS fs;
-N	FIL file;
-N  DIR DirInf;
-N	uint32_t bw;
-N	
-N
-N	
+N	delay_us(100000);//短暂延时，确保外设供电	
 N	bsp_Init();
-N	
-N	//bsp_DelayMS(500);
-N
-N
-N	
 N	#ifdef USE_USB_OTG_FS
 S		USBH_Init(&USB_OTG_Core,
 S			USB_OTG_FS_CORE_ID,
@@ -44108,1088 +44032,264 @@ N            &USB_Host,
 N            &USBH_MSC_cb,
 N            &USR_cb);
 N	#endif
-N
-N
-N
-N	 	/* AD7606进入普通工作模式 */
-N	
-N
 N	bsp_InitAD7606();	/* 配置AD7606所用的GPIO */
-N
 N	AD7606_SetOS(AD_OS_NO);		/* 无过采样 */
 N	AD7606_SetInputRange(0);	/* 0表示输入量程为正负5V, 1表示正负10V */
 N	AD7606_StartConvst();		/* 启动1次转换 */
 N	ucRefresh = 0;
-N	Encoder_Init();
-N	
+N	Encoder_Init();	
+N    
 N	while (1)
 N	{
 N		bsp_Idle();		/* 空闲时执行的函数,比如喂狗. 在bsp.c中 */
-N    USBH_Process(&USB_OTG_Core, &USB_Host);
+N        USBH_Process(&USB_OTG_Core, &USB_Host);
+N        DewenSet();
+N        HandleDate();
+N        SaveDate();
+N    }
 N
-N		
-N/*
-N*********************************************************************************************************
-N*	按键扫描
-N*********************************************************************************************************
-N*/
-N		
-N
-N if(USART_RX_STA&0x8000)
-N {
-N	if(USART_RX_BUF[5] == 0x20 && USART_RX_BUF[7] == 0x03)////开始暂停
-N		{
-N			ucFifoMode = 1;
-N			bsp_StartAutoTimer(0, 2);	
-N
-N			add[0] = 0;
-N			add[1] = 0;
-N			add[2] = 0;
-N			add[3] = 0;
-N			add[4] = 0;
-N			add[5] = 0;
-N															
-N			ave[0] = 0;
-N			ave[1] = 0;
-N			ave[2] = 0;
-N			ave[3] = 0;
-N			ave[4] = 0;
-N			ave[5] = 0;
-N			ave[6] = 0;
-N
-N		}
-N	
-N if(USART_RX_BUF[5] == 0x10 && USART_RX_BUF[7] == 0x01)//停止采集
-N		{																	
-N			ucFifoMode = 3;
-N		}		
-N	USART_RX_STA=0;
-N	}
-N		 
-N/*
-N*********************************************************************************************************
-N*	Cortex-M3 内核异常中断服务程序
-N*********************************************************************************************************
-N*/
-N	
-N
-Nif (ucFifoMode == 3)	
-N	{
-N		bsp_StopTimer(1);
-N		AD7606_StopRecord();
-N		f_close(&file);
-N//		ucFifoMode = 0;
-N	}
-N		
-N/*
-N*********************************************************************************************************
-N*	计算标定值
-N*********************************************************************************************************
-N*/
-N										
-N			
-N			
-N	if (ucFifoMode == 1)	/* 计算500个数的均值 */
-N		{
+N}
 N
 N
-N			if (bsp_CheckTimer(0))
-N			{
-N				/* 每隔xms 进来一次. 由软件启动转换 */
-N				AD7606_ReadNowAdc();		/* 读取采样结果 */
-N				AD7606_StartConvst();		/* 启动下次转换 */
-N				ucRefresh = 1;	/* 刷新显示 */
-N			}
-N			
-N			if (ucRefresh == 1)
-N				{	
-N					ucRefresh = 0;
-N					reset++;
-N					if(reset>100&&reset<=600)
-N					{
-N					//计算幅值和编码器距离
-N					chan[0] = g_tAD7606.sNowAdc[0]*5000/32768;
-N					chan[1] = g_tAD7606.sNowAdc[1]*5000/32768;
-N					chan[2] = g_tAD7606.sNowAdc[2]*5000/32768;
-N					chan[3] = g_tAD7606.sNowAdc[3]*5000/32768;
-N					chan[4] = g_tAD7606.sNowAdc[4]*5000/32768;
-N					chan[5] = g_tAD7606.sNowAdc[5]*5000/32768;
-N					
-N					add[0] = add[0] + chan[0];
-N					add[1] = add[1] + chan[1];
-N					add[2] = add[2] + chan[2];
-N					add[3] = add[3] + chan[3];
-N					add[4] = add[4] + chan[4];
-N					add[5] = add[5] + chan[5];
-N					}									
-N
-N					if(reset==600)
-N					{
-N						reset=0;
-N						ave[0] = add[0]/500;
-N						ave[1] = add[1]/500;
-N						ave[2] = add[2]/500;
-N						ave[3] = add[3]/500;
-N						ave[4] = add[4]/500;
-N						ave[5] = add[5]/500;
-N						ave[6] = ave[0]+ave[1]+ave[2]+ave[3]+ave[4]+ave[5];
-N
-N						bsp_StopTimer(0);
-N						ucFifoMode = 2;
-N						//显示时间更改
-N						bsp_StartAutoTimer(1, 20);	
-N						
-N						
-N						
-N						
-N						f_mount(FS_USB, &fs);
-X						f_mount(0, &fs);
-N						f_opendir(&DirInf, "/");
-N						f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
-X						f_open(&file, "采集数据.csv", 0x10 | 0x02);
-N						f_lseek(&file,f_size(&file));
-X						f_lseek(&file,((&file)->fsize));
-N						f_write(&file,  buffer, sizeof(buffer), &bw);
-N						f_sync(&file);
-N						
-N						//设置采集频率
-N						AD7606_StartRecord(2000);
-N
-N					}
-N			  }
-N
-N	}
-N
-N			
-N/*
-N*********************************************************************************************************
-N*	采集存储
-N*********************************************************************************************************
-N*/
-N		
-N
-N	if (ucFifoMode == 2)	/* AD7606 普通工作模式 */
-N	{
-N
-N		
-N		if (bsp_CheckTimer(1))
-N			{
-N				ucRefresh = 2;	/* 刷新显示 */
-N			}
-N
-N		
-N		if (ucRefresh == 2)
-N			{	
-N				ucRefresh = 0;
-N
-N				//计算幅值和编码器距离
-N				chan[0] = g_tAD7606.sNowAdc[0]*5000/32768+200-ave[0];
-N				chan[1] = g_tAD7606.sNowAdc[1]*5000/32768+200-ave[1];
-N				chan[2] = g_tAD7606.sNowAdc[2]*5000/32768+200-ave[2];
-N				chan[3] = g_tAD7606.sNowAdc[3]*5000/32768+200-ave[3];
-N				chan[4] = g_tAD7606.sNowAdc[4]*5000/32768+200-ave[4];
-N				chan[5] = g_tAD7606.sNowAdc[5]*5000/32768+200-ave[5];
-N				sum = chan[0]+chan[1]+chan[2]+chan[3]+chan[4]+chan[5]-600;
-N/*
-N*********************************************************************************************************
-N*	无滤波发送
-N*********************************************************************************************************
-N*/				
-N											 //发送至串口屏
-N//								comSendChar(COM1, 0x5A);
-N//								comSendChar(COM1, 0xA5);
-N//								comSendChar(COM1, 0x10);
-N//								comSendChar(COM1, 0x84);
-N//								comSendChar(COM1, 0x7F);
-N//								comSendHalfword(COM1,sum);
-N//  							comSendHalfword(COM1,chan[0]);
-N//								comSendHalfword(COM1,chan[1]);
-N//								comSendHalfword(COM1,chan[2]);
-N//								comSendHalfword(COM1,chan[3]);
-N//								comSendHalfword(COM1,chan[4]);
-N//								comSendHalfword(COM1,chan[5]);
-N				
-N/*
-N*********************************************************************************************************
-N*	中值滤波发送
-N*********************************************************************************************************
-N*/
-N				
-N//        AD7606_Array();
-N
-N
-N//       if(biaozhi_lb==1)
-N//        {
-N//				  sum_lb = chan[0]+chan[1]+chan[2]+chan[3]+chan[4]+chan[5]-400;
-N//						AD7606_Array_1();
-N//					   if(biaozhi_lb_1==1)
-N//						 {					 
-N//							  comSendChar(COM1, 0x5A);
-N//								comSendChar(COM1, 0xA5);
-N//								comSendChar(COM1, 0x12);
-N//								comSendChar(COM1, 0x84);
-N//								comSendChar(COM1, 0xFF);
-N//								comSendHalfword(COM1,sum);
-N//  							comSendHalfword(COM1,chan[0]);
-N//								comSendHalfword(COM1,chan[1]);
-N//								comSendHalfword(COM1,chan[2]);
-N//								comSendHalfword(COM1,chan[3]);
-N//								comSendHalfword(COM1,chan[4]);
-N//								comSendHalfword(COM1,chan[5]);
-N//							 	comSendHalfword(COM1,sum_lb);
-N//							 
-N//								comSendChar(COM1, 0x5A);
-N//								comSendChar(COM1, 0xA5);
-N//								comSendChar(COM1, 0x07);
-N//								comSendChar(COM1, 0x82);
-N//								comSendChar(COM1, 0x00);
-N//								comSendChar(COM1, 0x00);
-N//								comSendword(COM1,len);
-N//							 
-N//							 biaozhi_lb_1=0;
-N//						 }
-N//							 
-N//					
-N//					biaozhi_lb=0;
-N//        }
-N/*
-N*********************************************************************************************************
-N*	巴特沃斯滤波发送
-N*********************************************************************************************************
-N*/			
-N       bartworth ();
-N
-N//       if(biaozhi_bart == 1)
-N//        {
-N//										comSendChar(COM1, 0x5A);
-N//										comSendChar(COM1, 0xA5);
-N//										comSendChar(COM1, 0x12);
-N//										comSendChar(COM1, 0x84);
-N//										comSendChar(COM1, 0xFF);
-N//										comSendHalfword(COM1,sum);
-N//										comSendHalfword(COM1,chan[0]);
-N//										comSendHalfword(COM1,chan[1]);
-N//										comSendHalfword(COM1,chan[2]);
-N//										comSendHalfword(COM1,chan[3]);
-N//										comSendHalfword(COM1,chan[4]);
-N//										comSendHalfword(COM1,chan[5]);
-N//										comSendHalfword(COM1,sum);
-N//									 
-N//										comSendChar(COM1, 0x5A);
-N//										comSendChar(COM1, 0xA5);
-N//										comSendChar(COM1, 0x07);
-N//										comSendChar(COM1, 0x82);
-N//										comSendChar(COM1, 0x00);
-N//										comSendChar(COM1, 0x00);
-N//										comSendword(COM1,len);
-N//									 
-N//									 biaozhi_bart=0;
-N//        }	
-N       if(biaozhi_bart == 2)
+Nvoid DewenSet(void)
+N{
+N    if(USART_RX_STA&0x8000)
+N    {
+N        comSendChar(COM6, 0x5A);
+N        if(USART_RX_BUF[5] == 0x20 && USART_RX_BUF[7] == 0x03)//开始采集
 N        {
-N							  comSendChar(COM1, 0x5A);
-N								comSendChar(COM1, 0xA5);
-N								comSendChar(COM1, 0x12);
-N								comSendChar(COM1, 0x84);
-N								comSendChar(COM1, 0xFF);
-N								comSendHalfword(COM1,sum);
-N  							comSendHalfword(COM1,chan[0]);
-N								comSendHalfword(COM1,chan[1]);
-N								comSendHalfword(COM1,chan[2]);
-N								comSendHalfword(COM1,chan[3]);
-N								comSendHalfword(COM1,chan[4]);
-N								comSendHalfword(COM1,chan[5]);
-N							 	comSendHalfword(COM1,sum_lb_bart);
-N							 
-N								comSendChar(COM1, 0x5A);
-N								comSendChar(COM1, 0xA5);
-N								comSendChar(COM1, 0x07);
-N								comSendChar(COM1, 0x82);
-N								comSendChar(COM1, 0x00);
-N								comSendChar(COM1, 0x00);
-N								comSendword(COM1,len);
-N							 
-N							  comSendword(COM6,len);
-N							 	comSendHalfword(COM6,sum);
-N								comSendChar(COM6, 0xBB);
-N								comSendChar(COM6, 0xAA);
-N							 
-N							 biaozhi_bart=0;
-N        }				
-N				
-N				
-N				
+N            comSendChar(COM6, 0x5A);
+N            ucFifoMode = 1;
+N            bsp_StartAutoTimer(0, 2);	
+N            for (int i = 0; i < 6; i++) 
+N            {
+N                add[i] = 0;
+N                ave[i] = 0;
+N            }
+N            ave[6] = 0;
+N        }
 N
-N			}					
-N	}
+N        if(USART_RX_BUF[5] == 0x10 && USART_RX_BUF[7] == 0x01)//停止采集
+N        {															
+N            ucFifoMode = 3;
+N        }		
+N        USART_RX_STA=0;
+N    }
+N}
 N
-N//写字符型
-Nif(biaozhi == 1)
+Nvoid HandleDate(void)
 N{
-N	channel[0] = g_tAD7606.sNowAdc[0]*5000/32768;
-N	channel[1] = g_tAD7606.sNowAdc[1]*5000/32768;
-N	channel[2] = g_tAD7606.sNowAdc[2]*5000/32768;
-N	channel[3] = g_tAD7606.sNowAdc[3]*5000/32768;
-N	channel[4] = g_tAD7606.sNowAdc[4]*5000/32768;
-N	channel[5] = g_tAD7606.sNowAdc[5]*5000/32768;
-N	sumchannel = channel[0]+channel[1]+channel[2]+channel[3]+channel[4]+channel[5];
-N	num=(circle_count-1)*2400+TIM_GetCounter(TIM4);
-X	num=(circle_count-1)*2400+TIM_GetCounter(((TIM_TypeDef *) (((uint32_t)0x40000000) + 0x0800)));
-N	len = num*80*3.14/4/600;
+N    //执行停止按钮
+N    if (ucFifoMode == 3)	
+N    {
+N        bsp_StopTimer(1);
+N        AD7606_StopRecord();
+N        f_close(&file);
+N    }	
+N    //执行运行按钮
+N    if (ucFifoMode == 1)/* 计算500个数的均值 */
+N    {
+N        if (bsp_CheckTimer(0))
+N        {
+N            /* 每隔xms 进来一次. 由软件启动转换 */
+N            AD7606_ReadNowAdc();		/* 读取采样结果 */
+N            AD7606_StartConvst();		/* 启动下次转换 */
+N            ucRefresh = 1;	/* 刷新显示 */
+N        }			
+N        if (ucRefresh == 1)
+N        {	
+N            ucRefresh = 0;
+N            reset++;
+N            if(reset>100&&reset<=600)
+N            {
+N                //计算幅值和编码器距离
+N                for(int i = 0; i < 6; i++)
+N                {
+N                    chan[i] = g_tAD7606.sNowAdc[i]*5000/32768;
+N                }
+N                
+N                for (int i = 0; i < 6; i++) 
+N                {
+N                    add[i] += chan[i];
+N                }
+N            }									
+N            if(reset==600)
+N            {
+N                reset=0;
+N                for(int i = 0; i < 6; i++) 
+N                {
+N                    ave[i] = add[i]/500;
+N                }
+N                ave[6] = ave[0]+ave[1]+ave[2]+ave[3]+ave[4]+ave[5];
 N
-N	sprintf(BUF8, " %d" , len);
-N	sprintf(BUF0, " %d" , channel[0]);
-N	sprintf(BUF1, " %d" , channel[1]);
-N	sprintf(BUF2, " %d" , channel[2]);
-N	sprintf(BUF3, " %d" , channel[3]);
-N	sprintf(BUF4, " %d" , channel[4]);
-N	sprintf(BUF5, " %d" , channel[5]);
-N	sprintf(BUF6, " %d" , sumchannel);
-N	
-N	if(Mark==end)
-N	{
-N		Mark=0;
-N		
-N	}
-N	//一次54-6=48个字符
-N	if(Mark<middle)
-N	{
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[0];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[1];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[2];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[3];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[4];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[5];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[6];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[7];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[8];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF8[9];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF0[0];
-N//		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF0[1];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF0[2];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF0[3];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF0[4];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF1[0];
-N//		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF1[1];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF1[2];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF1[3];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF1[4];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF2[0];
-N//		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF2[1];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF2[2];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF2[3];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF2[4];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N		g_tAdcFifo.usWrite1++;	
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF3[0];
-N//		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF3[1];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF3[2];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF3[3];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF3[4];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF4[0];
-N//		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF4[1];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF4[2];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF4[3];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF4[4];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF5[0];
-N//		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF5[1];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF5[2];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF5[3];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF5[4];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[0];
-N//		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[1];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[2];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[3];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[4];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = BUF6[5];
-N		g_tAdcFifo.usWrite1++;
-N		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = '\n';
-N		g_tAdcFifo.usWrite1++;
+N                bsp_StopTimer(0);
+N                ucFifoMode = 2;
+N                //显示时间更改
+N                bsp_StartAutoTimer(1, 2);	
+N                                
+N                f_mount(FS_USB, &fs);
+X                f_mount(0, &fs);
+N                f_opendir(&DirInf, "/");
+N                f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
+X                f_open(&file, "采集数据.csv", 0x10 | 0x02);
+N                f_lseek(&file,f_size(&file));
+X                f_lseek(&file,((&file)->fsize));
+N                f_write(&file,  buffer, sizeof(buffer), &bw);
+N                f_sync(&file);                
+N                //设置采集频率
+N                AD7606_StartRecord(2000);
+N            }
+N        }
 N
 N	}
-N	if(Mark >= middle && Mark < end)
-N	{
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[0];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[1];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[2];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[3];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[4];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[5];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[6];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[7];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[8];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF8[9];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF0[0];
-N//		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF0[1];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF0[2];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF0[3];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF0[4];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF1[0];
-N//		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF1[1];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF1[2];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF1[3];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF1[4];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF2[0];
-N//		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF2[1];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF2[2];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF2[3];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF2[4];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N		g_tAdcFifo.usWrite2++;	
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF3[0];
-N//		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF3[1];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF3[2];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF3[3];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF3[4];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF4[0];
-N//		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF4[1];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF4[2];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF4[3];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF4[4];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF5[0];
-N//		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF5[1];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF5[2];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF5[3];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF5[4];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[0];
-N//		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[1];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[2];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[3];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[4];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = BUF6[5];
-N		g_tAdcFifo.usWrite2++;
-N		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = '\n';
-N		g_tAdcFifo.usWrite2++;		
-N
+N	if (ucFifoMode == 2)	/* AD7606 普通工作模式 */
+N	{		
+N		if (bsp_CheckTimer(1))
+N        {
+N            ucRefresh = 2;	/* 刷新显示 */
+N        }
+N		if (ucRefresh == 2)
+N        {	
+N            ucRefresh = 0;
+N            //计算幅值和编码器距离
+N            for (int i = 0; i < 6; i++) 
+N            {
+N                chan[i] = g_tAD7606.sNowAdc[i]*5000/32768+200-ave[i];
+N            }
+N            sum = chan[0]+chan[1]+chan[2]+chan[3]+chan[4]+chan[5]-600;
+N            //发送曲线
+N            comSendChar(COM1, 0x5A);
+N            comSendChar(COM1, 0xA5);
+N            comSendChar(COM1, 0x10);
+N            comSendChar(COM1, 0x84);
+N            comSendChar(COM1, 0x7F);
+N            comSendHalfword(COM1,sum);
+N            for (int i = 0; i < 6; i++)
+N            {
+N                comSendHalfword(COM1,chan[i]);
+N            }	
+N            //发送位置
+N            comSendChar(COM1, 0x5A);
+N            comSendChar(COM1, 0xA5);
+N            comSendChar(COM1, 0x07);
+N            comSendChar(COM1, 0x82);
+N            comSendChar(COM1, 0x00);
+N            comSendChar(COM1, 0x00);
+N            comSendword(COM1,len);
+N        }					
 N	}
+N}    
 N
-N	Mark++;
-N	
-N	if(Mark == middle)
-N	{
-N
-N		Calibration = 1;
-N 		g_tAdcFifo.usWrite1 = 0;
-N	
-N	}
-N		if(Mark == end)
-N	{
-N
-N		Calibration = 2;
-N 		g_tAdcFifo.usWrite2 = 0;
-N		
-N	}
-N	
-N	
-N		biaozhi = 0;
-N
-N
-N}
-N
-N
-N////写16进制数
-N
-N//if(biaozhi == 1)
-N//{
-N//	num=(circle_count-1)*2400+TIM_GetCounter(TIM4);
-N//	len = num*80*3.14/4/600;
-N
-N//	if(Mark==end)
-N//	{
-N//		Mark=0;
-N//		
-N//	}
-N//	//一次15个int16_t
-N//	if(Mark<middle)
-N//	{
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = (len>>16);					
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = len;
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N//		g_tAdcFifo.usWrite1++;
-N//		
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[0];
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[1];
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[2];
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[3];
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N//		g_tAdcFifo.usWrite1++;	
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[4];
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = ',';
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = g_tAD7606.sNowAdc[5];
-N//		g_tAdcFifo.usWrite1++;
-N//		g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1] = '\n';
-N//		g_tAdcFifo.usWrite1++;
-N
-N//	}
-N//	if(Mark >= middle && Mark < end)
-N//	{
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = (len>>16);					
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = len;
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N//		g_tAdcFifo.usWrite2++;
-N//		
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[0];
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[1];
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[2];
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N//		g_tAdcFifo.usWrite2++;		
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[3];
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[4];
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = g_tAD7606.sNowAdc[5];
-N//		g_tAdcFifo.usWrite2++;
-N//		g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2] = ',';
-N//		g_tAdcFifo.usWrite2++;
-N
-N//	}
-N
-N//	Mark++;
-N//	
-N//	if(Mark == middle)
-N//	{
-N
-N//		Calibration = 1;
-N// 		g_tAdcFifo.usWrite1 = 0;
-N//	
-N//	}
-N//		if(Mark == end)
-N//	{
-N
-N//		Calibration = 2;
-N// 		g_tAdcFifo.usWrite2 = 0;
-N//		
-N//	}
-N//	
-N//	
-N//		biaozhi = 0;
-N
-N
-N//}
-N	
-N	
-N	
-N	
-N	
-Nif(Calibration == 1)
+Nvoid SaveDate(void)
 N{
-N	f_lseek(&file,f_size(&file));
-X	f_lseek(&file,((&file)->fsize));
-N	f_write(&file, g_tAdcFifo.sBuf1, sizeof(g_tAdcFifo.sBuf1), &bw);
-N	f_sync(&file);
-N	memset(g_tAdcFifo.sBuf1,0,sizeof(g_tAdcFifo.sBuf1));
-N	Calibration = 0;
+N    //写字符型
+N    if(biaozhi == 1)
+N    {
+N        for (int i = 0; i < 6; i++)
+N        {
+N            channel[i] = g_tAD7606.sNowAdc[i]*5000/32768;
+N        }
+N        sumchannel = channel[0]+channel[1]+channel[2]+channel[3]+channel[4]+channel[5];
+N        num=(circle_count-1)*2400+TIM_GetCounter(TIM4);
+X        num=(circle_count-1)*2400+TIM_GetCounter(((TIM_TypeDef *) (((uint32_t)0x40000000) + 0x0800)));
+N        len = num*80*3.14/4/600;
+N
+N        sprintf(bufferSaveLen, " %d" , len);
+N        for(int i = 0; i < 6; i++)
+N        {
+N           sprintf(bufferSaveChannel[i], " %d" , channel[i]); 
+N        }
+N        sprintf(bufferSaveSum, " %d" , sumchannel);
+N       
+N        if(Mark==end)
+N        {
+N            Mark=0;
+N            
+N        }
+N        //一次54-6=48个字符
+N        if(Mark<middle)
+N        {           
+N            for(int i = 0; i <10; i++)
+N            {
+N                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveLen[i];
+N                
+N            }
+N            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
+N            for(int j = 0; j < 6; j++) 
+N            {
+N                for(int i = 1; i < 5; i++)
+N                {
+N                    g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveChannel[j][i];
+N                }
+N                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
+N            }
+N            for(int i = 1; i < 6; i++)
+N            {
+N                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveSum[i];
+N            }               
+N            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = '\n';
+N        }
+N        if(Mark >= middle && Mark < end)
+N        {
+N            for(int i = 0; i <10; i++)
+N            {
+N                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveLen[i];
+N                
+N            }
+N            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
+N            for(int j = 0; j < 6; j++) 
+N            {
+N                for(int i = 1; i < 5; i++)
+N                {
+N                    g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveChannel[j][i];
+N                }
+N                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
+N            }
+N            for(int i = 1; i < 6; i++)
+N            {
+N                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveSum[i];
+N            }               
+N            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = '\n';
+N        }
+N
+N        Mark++;
+N        
+N        if(Mark == middle)
+N        {
+N
+N            Calibration = 1;
+N            g_tAdcFifo.usWrite1 = 0;
+N        
+N        }
+N        if(Mark == end)
+N        {
+N
+N            Calibration = 2;
+N            g_tAdcFifo.usWrite2 = 0;
+N            
+N        }
+N           
+N        biaozhi = 0;
+N
+N    }
+N	
+N    if(Calibration == 1)
+N    {
+N        f_lseek(&file,f_size(&file));
+X        f_lseek(&file,((&file)->fsize));
+N        f_write(&file, g_tAdcFifo.sBuf1, sizeof(g_tAdcFifo.sBuf1), &bw);
+N        f_sync(&file);
+N        memset(g_tAdcFifo.sBuf1,0,sizeof(g_tAdcFifo.sBuf1));
+N        Calibration = 0;
+N    }
+N    if(Calibration == 2)
+N    {
+N        f_lseek(&file,f_size(&file));
+X        f_lseek(&file,((&file)->fsize));
+N        f_write(&file, g_tAdcFifo.sBuf2, sizeof(g_tAdcFifo.sBuf2), &bw);
+N        f_sync(&file);
+N        memset(g_tAdcFifo.sBuf2,0,sizeof(g_tAdcFifo.sBuf2));
+N        Calibration = 0;
+N    }
 N}
-Nif(Calibration == 2)
-N{
-N	f_lseek(&file,f_size(&file));
-X	f_lseek(&file,((&file)->fsize));
-N	f_write(&file, g_tAdcFifo.sBuf2, sizeof(g_tAdcFifo.sBuf2), &bw);
-N	f_sync(&file);
-N	memset(g_tAdcFifo.sBuf2,0,sizeof(g_tAdcFifo.sBuf2));
-N	Calibration = 0;
-N}
-N
-N					
-N			
-N
-N}//while函数的括号
-N
-N}//main函数的括号
-N
-N
-N
-N
-Nvoid AD7606_Array(void)
-N{
-N	  int l_6;
-N		value_buf0[count]=chan[0];
-N		value_buf1[count]=chan[1];
-N		value_buf2[count]=chan[2];
-N		value_buf3[count]=chan[3]; 
-N		value_buf4[count]=chan[4];
-N		value_buf5[count]=chan[5]; 
-N//		value_buf6[count]=sum;
-N   
-N	  count++;
-N	
-N	if(count%N==0)
-X	if(count%9==0)
-N	{
-N		AD7606_Filter();
-N		biaozhi_lb=1;
-N		for( l_6=0;l_6<N-1;l_6++)
-X		for( l_6=0;l_6<9-1;l_6++)
-N		{
-N			value_buf0[l_6]=value_buf0[l_6+1];
-N			value_buf1[l_6]=value_buf1[l_6+1];
-N			value_buf2[l_6]=value_buf2[l_6+1];
-N			value_buf3[l_6]=value_buf3[l_6+1];
-N			value_buf4[l_6]=value_buf4[l_6+1];
-N			value_buf5[l_6]=value_buf5[l_6+1];
-N//			value_buf6[l]=value_buf6[l+1];
-N		}
-N		count=N-1;
-X		count=9-1;
-N	}
-N
-N}
-N
-Nvoid AD7606_Filter(void)
-N{ 
-N	uint8_t p, j;
-N	int16_t temp_lb;
-N	int16_t copy_0[N] = {0};
-X	int16_t copy_0[9] = {0};
-N	int16_t copy_1[N] = {0};
-X	int16_t copy_1[9] = {0};
-N	int16_t copy_2[N] = {0};
-X	int16_t copy_2[9] = {0};
-N	int16_t copy_3[N] = {0};
-X	int16_t copy_3[9] = {0};
-N	int16_t copy_4[N] = {0};
-X	int16_t copy_4[9] = {0};
-N	int16_t copy_5[N] = {0};	
-X	int16_t copy_5[9] = {0};	
-N//	int16_t copy_6[N] = {0};	
-N	
-N	
-N  memcpy(copy_0, value_buf0, sizeof(int16_t) * N);
-X  memcpy(copy_0, value_buf0, sizeof(int16_t) * 9);
-N  memcpy(copy_1, value_buf1, sizeof(int16_t) * N);
-X  memcpy(copy_1, value_buf1, sizeof(int16_t) * 9);
-N  memcpy(copy_2, value_buf2, sizeof(int16_t) * N);				
-X  memcpy(copy_2, value_buf2, sizeof(int16_t) * 9);				
-N  memcpy(copy_3, value_buf3, sizeof(int16_t) * N);
-X  memcpy(copy_3, value_buf3, sizeof(int16_t) * 9);
-N  memcpy(copy_4, value_buf4, sizeof(int16_t) * N);	
-X  memcpy(copy_4, value_buf4, sizeof(int16_t) * 9);	
-N  memcpy(copy_5, value_buf5, sizeof(int16_t) * N);	
-X  memcpy(copy_5, value_buf5, sizeof(int16_t) * 9);	
-N//  memcpy(copy_6, value_buf6, sizeof(int16_t) * N);	
-N  
-N	//通道0*************************************************************//
-N	for (j=0; j<N-1; j++)		
-X	for (j=0; j<9-1; j++)		
-N	{
-N		for (p=0; p<N-j-1; p++)
-X		for (p=0; p<9-j-1; p++)
-N		{
-N			if (copy_0[p] > copy_0[p+1])
-N			{
-N				temp_lb = copy_0[p];
-N				copy_0[p] = copy_0[p+1];
-N				copy_0[p+1] = temp_lb;
-N			}
-N		}
-N	}
-N	//通道1*************************************************************//
-N	for (j=0; j<N-1; j++)		
-X	for (j=0; j<9-1; j++)		
-N	{
-N		for (p=0; p<N-j-1; p++)
-X		for (p=0; p<9-j-1; p++)
-N		{
-N			if (copy_1[p] > copy_1[p+1])
-N			{
-N				temp_lb = copy_1[p];
-N				copy_1[p] = copy_1[p+1];
-N				copy_1[p+1] = temp_lb;
-N			}
-N		}
-N	}
-N //通道2*************************************************************//
-N	for (j=0; j<N-1; j++)		
-X	for (j=0; j<9-1; j++)		
-N	{
-N		for (p=0; p<N-j-1; p++)
-X		for (p=0; p<9-j-1; p++)
-N		{
-N			if (copy_2[p] > copy_2[p+1])
-N			{
-N				temp_lb = copy_2[p];
-N				copy_2[p] = copy_2[p+1];
-N				copy_2[p+1] = temp_lb;
-N			}
-N		}
-N	}
-N	//通道3*************************************************************//
-N	for (j=0; j<N-1; j++)		
-X	for (j=0; j<9-1; j++)		
-N	{
-N		for (p=0; p<N-j-1; p++)
-X		for (p=0; p<9-j-1; p++)
-N		{
-N			if (copy_3[p] > copy_3[p+1])
-N			{
-N				temp_lb = copy_3[p];
-N				copy_3[p] = copy_3[p+1];
-N				copy_3[p+1] = temp_lb;
-N			}
-N		}
-N	}
-N	//通道4*************************************************************//
-N	for (j=0; j<N-1; j++)		
-X	for (j=0; j<9-1; j++)		
-N	{
-N		for (p=0; p<N-j-1; p++)
-X		for (p=0; p<9-j-1; p++)
-N		{
-N			if (copy_4[p] > copy_4[p+1])
-N			{
-N				temp_lb = copy_4[p];
-N				copy_4[p] = copy_4[p+1];
-N				copy_4[p+1] = temp_lb;
-N			}
-N		}
-N	}
-N	//通道5*************************************************************//
-N	for (j=0; j<N-1; j++)		
-X	for (j=0; j<9-1; j++)		
-N	{
-N		for (p=0; p<N-j-1; p++)
-X		for (p=0; p<9-j-1; p++)
-N		{
-N			if (copy_5[p] > copy_5[p+1])
-N			{
-N				temp_lb = copy_5[p];
-N				copy_5[p] = copy_5[p+1];
-N				copy_5[p+1] = temp_lb;
-N			}
-N		}
-N	}
-N	//通道和*************************************************************//
-N//	for (j=0; j<N-1; j++)		
-N//	{
-N//		for (p=0; p<N-j-1; p++)
-N//		{
-N//			if (copy_6[p] > copy_6[p+1])
-N//			{
-N//				temp_lb = copy_6[p];
-N//				copy_6[p] = copy_6[p+1];
-N//				copy_6[p+1] = temp_lb;
-N//			}
-N//		}
-N//	}
-N	
-N	
-N	chan[0] = copy_0[(N-1)/2];
-X	chan[0] = copy_0[(9-1)/2];
-N	chan[1] = copy_1[(N-1)/2];
-X	chan[1] = copy_1[(9-1)/2];
-N	chan[2] = copy_2[(N-1)/2];
-X	chan[2] = copy_2[(9-1)/2];
-N	chan[3] = copy_3[(N-1)/2];	
-X	chan[3] = copy_3[(9-1)/2];	
-N	chan[4] = copy_4[(N-1)/2];
-X	chan[4] = copy_4[(9-1)/2];
-N	chan[5] = copy_5[(N-1)/2];	
-X	chan[5] = copy_5[(9-1)/2];	
-N//	sum = copy_6[(N-1)/2];
-N	
-N	
-N	
-N}
-N
-N
-Nvoid AD7606_Array_1(void)
-N{
-N	  int l_1;
-N		value_buf6[count_1]=sum_lb;  
-N	  count_1++;
-N	
-N	if(count_1%M==0)
-X	if(count_1%9==0)
-N	{
-N		AD7606_Filter_1();
-N		biaozhi_lb_1=1;
-N		for( l_1=0;l_1<M-1;l_1++)
-X		for( l_1=0;l_1<9-1;l_1++)
-N		{
-N			value_buf6[l_1]=value_buf6[l_1+1];
-N		}
-N		count_1=M-1;
-X		count_1=9-1;
-N	}
-N
-N}
-N
-Nvoid AD7606_Filter_1(void)
-N{ 
-N	uint8_t p, j;
-N	int16_t temp_lb;	
-N	int16_t copy_6[M] = {0};	
-X	int16_t copy_6[9] = {0};	
-N
-N  memcpy(copy_6, value_buf6, sizeof(int16_t) * N);	
-X  memcpy(copy_6, value_buf6, sizeof(int16_t) * 9);	
-N
-N	//通道和*************************************************************//
-N	for (j=0; j<M-1; j++)		
-X	for (j=0; j<9-1; j++)		
-N	{
-N		for (p=0; p<M-j-1; p++)
-X		for (p=0; p<9-j-1; p++)
-N		{
-N			if (copy_6[p] > copy_6[p+1])
-N			{
-N				temp_lb = copy_6[p];
-N				copy_6[p] = copy_6[p+1];
-N				copy_6[p+1] = temp_lb;
-N			}
-N		}
-N	}
-N	
-N	
-N	sum_lb = copy_6[(M-1)/2];
-X	sum_lb = copy_6[(9-1)/2];
-N	
-N	
-N	
-N}
-N
-Nvoid bartworth (void)
-N{
-N	bart_count++;
-N	int bart_l;
-N	bart_x [bart_count_x] = sum;
-N	bart_count_x++;
-N	
-N	if(bart_count_x == 1)
-N	{
-N		bart_y[0] = bart_b[0] * bart_x[0];
-N		
-N	}
-N	
-N	if(bart_count_x == 2)
-N	{
-N		bart_y[1] = (bart_b[0] * bart_x[1] + bart_b[1] * bart_x[0]) -    
-N		            (bart_a[1] * bart_y[0]);
-N		
-N	}
-N	
-N	if(bart_count_x == 3)
-N	{
-N		bart_y[2] = (bart_b[0] * bart_x[2] + bart_b[1] * bart_x[1] + bart_b[2] * bart_x[0]) - 
-N		            (bart_a[1] * bart_y[1] + bart_a[2] * bart_y[0]);
-N		
-N	}
-N	
-N	if(bart_count_x == 4)
-N	{
-N		bart_y[3] = (bart_b[0] * bart_x[3] + bart_b[1] * bart_x[2] + bart_b[2] * bart_x[1]+ bart_b[3] * bart_x[0]) - 
-N		            (bart_a[1] * bart_y[2]+bart_a[2] * bart_y[1]+bart_a[3] * bart_y[0]);
-N
-N	}
-N	
-N	if(bart_count_x == 5)
-N	{
-N		bart_y[4] = (bart_b[0] * bart_x[4] + bart_b[1] * bart_x[3] + bart_b[2] * bart_x[2]+ bart_b[3] * bart_x[1]+ bart_b[4] * bart_x[0])- 
-N		            (bart_a[1] * bart_y[3] + bart_a[2] * bart_y[2] + bart_a[3] * bart_y[1]+ bart_a[4] * bart_y[0]);
-N
-N	}		
-N	if(bart_count_x == 6)
-N	{
-N		bart_y[5] = (bart_b[0] * bart_x[5] + bart_b[1] * bart_x[4] + bart_b[2] * bart_x[3]+ bart_b[3] * bart_x[2]+ bart_b[4] * bart_x[1]+
-N		             bart_b[5] * bart_x[0])- 
-N		            (bart_a[1] * bart_y[4] + bart_a[2] * bart_y[3] + bart_a[3] * bart_y[2]+ bart_a[4] * bart_y[1] +
-N		             bart_a[5] * bart_y[0]);
-N
-N	}		
-N	if(bart_count_x == 7)
-N	{
-N		bart_y[6] = (bart_b[0] * bart_x[6] + bart_b[1] * bart_x[5] + bart_b[2] * bart_x[4]+ bart_b[3] * bart_x[3]+ bart_b[4] * bart_x[2]+
-N		             bart_b[5] * bart_x[1] + bart_b[6] * bart_x[0] )- 
-N		            (bart_a[1] * bart_y[5] + bart_a[2] * bart_y[4] + bart_a[3] * bart_y[3]+ bart_a[4] * bart_y[2] +
-N		             bart_a[5] * bart_y[1] + bart_a[6] * bart_y[0] );
-N
-N	}		
-N	if(bart_count_x == 8)
-N	{
-N		bart_y[7] = (bart_b[0] * bart_x[7] + bart_b[1] * bart_x[6] + bart_b[2] * bart_x[5]+ bart_b[3] * bart_x[4]+ bart_b[4] * bart_x[3]+
-N		             bart_b[5] * bart_x[2] + bart_b[6] * bart_x[1] + bart_b[7] * bart_x[0])- 
-N		            (bart_a[1] * bart_y[6] + bart_a[2] * bart_y[5] + bart_a[3] * bart_y[4]+ bart_a[4] * bart_y[3] +
-N		             bart_a[5] * bart_y[2] + bart_a[6] * bart_y[1] + bart_a[7] * bart_y[0]);
-N
-N	}	
-N	
-N	
-N	
-N	if(bart_count_x%9 == 0)
-N	{
-N		bart_y[8] = (bart_b[0] * bart_x[8] + bart_b[1] * bart_x[7] + bart_b[2] * bart_x[6]+ bart_b[3] * bart_x[5]+ bart_b[4] * bart_x[4]+
-N		             bart_b[5] * bart_x[3] + bart_b[6] * bart_x[2] + bart_b[7] * bart_x[1]+ bart_b[8] * bart_x[0])- 
-N		            (bart_a[1] * bart_y[7] + bart_a[2] * bart_y[6] + bart_a[3] * bart_y[5]+ bart_a[4] * bart_y[4] +
-N		             bart_a[5] * bart_y[3] + bart_a[6] * bart_y[2] + bart_a[7] * bart_y[1]+ bart_a[8] * bart_y[0]);
-N
-N		if(bart_count < 500)
-N		{
-N			biaozhi_bart = 1;
-N			
-N		}	
-N		
-N		if(bart_count > 500)
-N		{
-N			biaozhi_bart = 2;
-N			sum_lb_bart = (int16_t)(bart_y[8]+200);
-N			
-N		}
-N		for( bart_l=0;bart_l<8;bart_l++)
-N		{
-N			bart_x[bart_l]=bart_x[bart_l+1];
-N			bart_y[bart_l]=bart_y[bart_l+1];
-N		}
-N		bart_count_x = 8;
-N		
-N	}	
-N	
-N	
-N
-N	
-N	
-N	 
-N
-N}
-N
 N

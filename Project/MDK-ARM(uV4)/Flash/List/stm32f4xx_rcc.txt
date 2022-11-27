@@ -987,7 +987,7 @@
                   |L22.220|
                           DCD      0x00f42400
                   |L22.224|
-                          DCD      0x007a1200
+                          DCD      0x017d7840
                   |L22.228|
                           DCD      APBAHBPrescTable
 

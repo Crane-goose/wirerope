@@ -223,8 +223,8 @@ N  */
 N
 N#if !defined  (HSE_VALUE) 
 X#if !0L 
-N//  #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
-N  #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
+N   #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
+N//    #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
 N#endif /* HSE_VALUE */
 N
 N/**
@@ -14350,8 +14350,8 @@ S        can define the HSE value in your toolchain compiler preprocessor.
 S  */           
 S
 S#if !defined  (HSE_VALUE) 
-S//  #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
-S  #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
+S   #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
+S//    #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
 S#endif /* HSE_VALUE */
 S
 S/**

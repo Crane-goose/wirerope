@@ -380,8 +380,8 @@ N  */
 N
 N#if !defined  (HSE_VALUE) 
 X#if !0L 
-N//  #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
-N  #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
+N   #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
+N//    #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
 N#endif /* HSE_VALUE */
 N
 N/**
@@ -14507,8 +14507,8 @@ S        can define the HSE value in your toolchain compiler preprocessor.
 S  */           
 S
 S#if !defined  (HSE_VALUE) 
-S//  #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
-S  #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
+S   #define HSE_VALUE    ((uint32_t)25000000) /*!< Value of the External oscillator in Hz */
+S//    #define HSE_VALUE    ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */  
 S#endif /* HSE_VALUE */
 S
 S/**
@@ -35072,8 +35072,8 @@ N/******************************************************************************
 N
 N/************************* PLL Parameters *************************************/
 N/* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N */
-N//#define PLL_M      25
-N#define PLL_M      8
+N#define PLL_M      25
+N//#define PLL_M      8
 N/* USB OTG FS, SDIO and RNG Clock =  PLL_VCO / PLLQ */
 N#define PLL_Q      7
 N
@@ -35267,7 +35267,7 @@ X      SystemCoreClock = ((uint32_t)16000000);
 N      break;
 N    case 0x04:  /* HSE used as system clock source */
 N      SystemCoreClock = HSE_VALUE;
-X      SystemCoreClock = ((uint32_t)8000000);
+X      SystemCoreClock = ((uint32_t)25000000);
 N      break;
 N    case 0x08:  /* PLL used as system clock source */
 N
@@ -35283,7 +35283,7 @@ N      if (pllsource != 0)
 N      {
 N        /* HSE used as PLL clock source */
 N        pllvco = (HSE_VALUE / pllm) * ((RCC->PLLCFGR & RCC_PLLCFGR_PLLN) >> 6);
-X        pllvco = (((uint32_t)8000000) / pllm) * ((((RCC_TypeDef *) ((((uint32_t)0x40000000) + 0x00020000) + 0x3800))->PLLCFGR & ((uint32_t)0x00007FC0)) >> 6);
+X        pllvco = (((uint32_t)25000000) / pllm) * ((((RCC_TypeDef *) ((((uint32_t)0x40000000) + 0x00020000) + 0x3800))->PLLCFGR & ((uint32_t)0x00007FC0)) >> 6);
 N      }
 N      else
 N      {
@@ -35382,7 +35382,7 @@ N#endif /* STM32F401xx */
 N   
 N    /* Configure the main PLL */
 N    RCC->PLLCFGR = PLL_M | (PLL_N << 6) | (((PLL_P >> 1) -1) << 16) |
-X    ((RCC_TypeDef *) ((((uint32_t)0x40000000) + 0x00020000) + 0x3800))->PLLCFGR = 8 | (336 << 6) | (((2 >> 1) -1) << 16) |
+X    ((RCC_TypeDef *) ((((uint32_t)0x40000000) + 0x00020000) + 0x3800))->PLLCFGR = 25 | (336 << 6) | (((2 >> 1) -1) << 16) |
 N                   (RCC_PLLCFGR_PLLSRC_HSE) | (PLL_Q << 24);
 X                   (((uint32_t)0x00400000)) | (7 << 24);
 N
