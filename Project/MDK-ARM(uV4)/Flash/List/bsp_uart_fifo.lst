@@ -36943,6 +36943,7 @@ N#ifndef __BSP_ENCODER_H
 N#define __BSP_ENCODER_H
 N
 Nextern int circle_count;
+Nextern int flagEncoder;
 Nvoid Encoder_Init(void);
 N
 N

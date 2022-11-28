@@ -36926,6 +36926,7 @@ N#ifndef __BSP_ENCODER_H
 N#define __BSP_ENCODER_H
 N
 Nextern int circle_count;
+Nextern int flagEncoder;
 Nvoid Encoder_Init(void);
 N
 N
@@ -43948,32 +43949,31 @@ N
 Nvoid DewenSet(void);
 Nvoid SaveDate(void);
 Nvoid HandleDate(void);
+Nvoid EncoderMode(void);
+Nvoid FreqMode(void);
+Nvoid HandleDateEncoder(void);
+Nvoid SaveFile(void);
+Nvoid SaveBuffer(void);
+N
+N
 Nuint8_t count=0;
 Nuint8_t count_1=0;
-Nint biaozhi_lb=0;
-Nint biaozhi_lb_1=0;
 N	
 N	
 Nint16_t sum;
-Nint16_t sum_lb;
 Nint16_t chan[6];
 N
-Nint biaozhi_bart=0;
-Nint16_t sum_lb_bart;
 N
 N
-N//uint8_t ucKeyCode;
+N
 Nuint8_t ucRefresh = 0;
 Nuint8_t ucFifoMode =0;//1;均值 2：采集 3：停止
-N//uint16_t storage = 0;
 Nuint16_t reset = 0;
-N//int16_t sum;外部定义
 Nint32_t add[6];
 Nint16_t ave[7];
-N//int16_t chan[6];
 Nchar buffer[48] = "位置,通道1,通道2,通道3,通道4,通道5,通道6,和通道\n" ;
-Nint16_t middle = 151;
-Nint16_t end = 302;
+Nint16_t middle = 150;
+Nint16_t end = 300;
 N
 Nuint16_t Mark = 0;
 Nuint8_t Calibration = 0;
@@ -44007,14 +44007,6 @@ N    }
 N  }
 N}
 N
-N/*
-N*********************************************************************************************************
-N*	函 数 名: main
-N*	功能说明: c程序入口
-N*	形    参：无
-N*	返 回 值: 错误代码(无需处理)
-N*********************************************************************************************************
-N*/
 Nint main(void)
 N{
 N	delay_us(100000);//短暂延时，确保外设供电	
@@ -44043,22 +44035,37 @@ N	while (1)
 N	{
 N		bsp_Idle();		/* 空闲时执行的函数,比如喂狗. 在bsp.c中 */
 N        USBH_Process(&USB_OTG_Core, &USB_Host);
-N        DewenSet();
-N        HandleDate();
-N        SaveDate();
+N        
+N        EncoderMode();
+N        
+N        //更换需在encoder文件中更改计数
+N        //FreqMode();
+N        
+N
 N    }
 N
 N}
 N
+Nvoid EncoderMode(void)
+N{
+N    DewenSet();
+N    HandleDateEncoder();
+N}
+N
+Nvoid FreqMode(void)
+N{
+N    DewenSet();
+N    HandleDate();
+N    SaveDate();   
+N}
 N
 Nvoid DewenSet(void)
 N{
 N    if(USART_RX_STA&0x8000)
 N    {
-N        comSendChar(COM6, 0x5A);
 N        if(USART_RX_BUF[5] == 0x20 && USART_RX_BUF[7] == 0x03)//开始采集
 N        {
-N            comSendChar(COM6, 0x5A);
+N            len = 0;
 N            ucFifoMode = 1;
 N            bsp_StartAutoTimer(0, 2);	
 N            for (int i = 0; i < 6; i++) 
@@ -44076,6 +44083,121 @@ N        }
 N        USART_RX_STA=0;
 N    }
 N}
+N
+Nvoid HandleDateEncoder(void)
+N{
+N    //执行停止按钮
+N    if (ucFifoMode == 3)	
+N    {
+N        bsp_StopTimer(1);
+N        AD7606_StopRecord();
+N        f_close(&file);
+N    }	
+N    //执行运行按钮
+N    if (ucFifoMode == 1)/* 计算500个数的均值 */
+N    {
+N        if (bsp_CheckTimer(0))
+N        {
+N            /* 每隔xms 进来一次. 由软件启动转换 */
+N            AD7606_ReadNowAdc();		/* 读取采样结果 */
+N            AD7606_StartConvst();		/* 启动下次转换 */
+N            ucRefresh = 1;	/* 刷新显示 */
+N        }			
+N        if (ucRefresh == 1)
+N        {	
+N            ucRefresh = 0;
+N            reset++;
+N            if(reset>100&&reset<=600)
+N            {
+N                //计算幅值和编码器距离
+N                for(int i = 0; i < 6; i++)
+N                {
+N                    chan[i] = g_tAD7606.sNowAdc[i]*5000/32768;
+N                }
+N                
+N                for (int i = 0; i < 6; i++) 
+N                {
+N                    add[i] += chan[i];
+N                }
+N            }									
+N            if(reset==600)
+N            {
+N                reset=0;
+N                for(int i = 0; i < 6; i++) 
+N                {
+N                    ave[i] = add[i]/500;
+N                }
+N                ave[6] = ave[0]+ave[1]+ave[2]+ave[3]+ave[4]+ave[5];
+N
+N                bsp_StopTimer(0);
+N                ucFifoMode = 2;	                                
+N                f_mount(FS_USB, &fs);
+X                f_mount(0, &fs);
+N                f_opendir(&DirInf, "/");
+N                f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
+X                f_open(&file, "采集数据.csv", 0x10 | 0x02);
+N                f_lseek(&file,f_size(&file));
+X                f_lseek(&file,((&file)->fsize));
+N                f_write(&file,  buffer, sizeof(buffer), &bw);
+N                f_sync(&file);                
+N            }
+N        }
+N
+N	}
+N	if (ucFifoMode == 2)	/* AD7606 普通工作模式 */
+N	{
+N        if (flagEncoder == 1) 
+N        {
+N            flagEncoder = 0;
+N            AD7606_ReadNowAdc();		/* 读取采样结果 */
+N            AD7606_StartConvst();		/* 启动下次转换 */
+N            //计算幅值和编码器距离
+N            for (int i = 0; i < 6; i++) 
+N            {
+N                chan[i] = g_tAD7606.sNowAdc[i]*5000/32768 + 200 - ave[i];
+N                channel[i] = g_tAD7606.sNowAdc[i]*5000/32768;
+N            }
+N            sum = chan[0]+chan[1]+chan[2]+chan[3]+chan[4]+chan[5]-600;
+N            sumchannel = channel[0]+channel[1]+channel[2]+channel[3]+channel[4]+channel[5];
+N            len++;
+N            //发送曲线
+N            comSendChar(COM1, 0x5A);
+N            comSendChar(COM1, 0xA5);
+N            comSendChar(COM1, 0x10);
+N            comSendChar(COM1, 0x84);
+N            comSendChar(COM1, 0x7F);
+N            comSendHalfword(COM1,sum);
+N            for (int i = 0; i < 6; i++)
+N            {
+N                comSendHalfword(COM1,chan[i]);
+N            }            
+N             //发送位置
+N            comSendChar(COM1, 0x5A);
+N            comSendChar(COM1, 0xA5);
+N            comSendChar(COM1, 0x07);
+N            comSendChar(COM1, 0x82);
+N            comSendChar(COM1, 0x00);
+N            comSendChar(COM1, 0x00);
+N            comSendword(COM1,len);
+N            
+N            //保存数据
+N            //打印成字符串类型
+N            sprintf(bufferSaveLen, " %d" , len);
+N            for(int i = 0; i < 6; i++)
+N            {
+N               sprintf(bufferSaveChannel[i], " %d" , channel[i]); 
+N            }
+N            sprintf(bufferSaveSum, " %d" , sumchannel);  
+N            
+N            SaveBuffer();
+N            SaveFile();
+N            
+N
+N        }
+N     					
+N	}
+N}
+N
 N
 Nvoid HandleDate(void)
 N{
@@ -44200,79 +44322,89 @@ N        {
 N           sprintf(bufferSaveChannel[i], " %d" , channel[i]); 
 N        }
 N        sprintf(bufferSaveSum, " %d" , sumchannel);
-N       
-N        if(Mark==end)
-N        {
-N            Mark=0;
-N            
-N        }
-N        //一次54-6=48个字符
-N        if(Mark<middle)
-N        {           
-N            for(int i = 0; i <10; i++)
-N            {
-N                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveLen[i];
-N                
-N            }
-N            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
-N            for(int j = 0; j < 6; j++) 
-N            {
-N                for(int i = 1; i < 5; i++)
-N                {
-N                    g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveChannel[j][i];
-N                }
-N                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
-N            }
-N            for(int i = 1; i < 6; i++)
-N            {
-N                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveSum[i];
-N            }               
-N            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = '\n';
-N        }
-N        if(Mark >= middle && Mark < end)
-N        {
-N            for(int i = 0; i <10; i++)
-N            {
-N                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveLen[i];
-N                
-N            }
-N            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
-N            for(int j = 0; j < 6; j++) 
-N            {
-N                for(int i = 1; i < 5; i++)
-N                {
-N                    g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveChannel[j][i];
-N                }
-N                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
-N            }
-N            for(int i = 1; i < 6; i++)
-N            {
-N                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveSum[i];
-N            }               
-N            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = '\n';
-N        }
-N
-N        Mark++;
 N        
-N        if(Mark == middle)
-N        {
-N
-N            Calibration = 1;
-N            g_tAdcFifo.usWrite1 = 0;
-N        
-N        }
-N        if(Mark == end)
-N        {
-N
-N            Calibration = 2;
-N            g_tAdcFifo.usWrite2 = 0;
-N            
-N        }
-N           
+N        SaveBuffer();     
 N        biaozhi = 0;
 N
 N    }
-N	
+N	SaveFile();
+N
+N}
+N
+N
+Nvoid SaveBuffer(void)
+N{
+N    if(Mark==end)
+N    {
+N        Mark=0;
+N        
+N    }
+N    //一次54-6=48个字符
+N    if(Mark<middle)
+N    {           
+N        for(int i = 0; i <10; i++)
+N        {
+N            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveLen[i];
+N            
+N        }
+N        g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
+N        for(int j = 0; j < 6; j++) 
+N        {
+N            for(int i = 1; i < 5; i++)
+N            {
+N                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveChannel[j][i];
+N            }
+N            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
+N        }
+N        for(int i = 1; i < 6; i++)
+N        {
+N            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveSum[i];
+N        }               
+N        g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = '\n';
+N    }
+N    if(Mark >= middle && Mark < end)
+N    {
+N        for(int i = 0; i <10; i++)
+N        {
+N            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveLen[i];
+N            
+N        }
+N        g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
+N        for(int j = 0; j < 6; j++) 
+N        {
+N            for(int i = 1; i < 5; i++)
+N            {
+N                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveChannel[j][i];
+N            }
+N            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
+N        }
+N        for(int i = 1; i < 6; i++)
+N        {
+N            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveSum[i];
+N        }               
+N        g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = '\n';
+N    }
+N
+N    Mark++;
+N    
+N    if(Mark == middle)
+N    {
+N
+N        Calibration = 1;
+N        g_tAdcFifo.usWrite1 = 0;
+N    
+N    }
+N    if(Mark == end)
+N    {
+N
+N        Calibration = 2;
+N        g_tAdcFifo.usWrite2 = 0;
+N        
+N    }
+N}
+N
+Nvoid SaveFile(void)
+N{
 N    if(Calibration == 1)
 N    {
 N        f_lseek(&file,f_size(&file));

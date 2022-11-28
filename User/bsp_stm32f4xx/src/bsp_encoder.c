@@ -13,7 +13,8 @@ static void Encoder_TIM4_Init(void)
 	
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4,ENABLE);  ///使能TIM5时钟
 	
-  TIM_TimeBaseInitStructure.TIM_Period = 2399;//20; 	//自动重装载值
+    TIM_TimeBaseInitStructure.TIM_Period = 8;//20; 	//自动重装载值
+    //TIM_TimeBaseInitStructure.TIM_Period = 2399;//20; 	//自动重装载值
 	TIM_TimeBaseInitStructure.TIM_Prescaler=0;  //定时器分频
 	TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up; //向上计数模式
 	TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
@@ -45,7 +46,7 @@ static void Encoder_TIM4_Init(void)
 	 NVIC_Init(&NVIC_InitStructure);
 
 	
-	TIM_SetCounter(TIM4,0);//应该不能为0
+	TIM_SetCounter(TIM4, 0);//应该不能为0
 	
 	TIM_Cmd(TIM4,ENABLE);
 }
@@ -77,15 +78,19 @@ void Encoder_Init(void)
 								编码器溢出中断
 **************************************************************/
 int circle_count=0;//全局变量-圈数
+int flagEncoder = 0;
 void TIM4_IRQHandler(void) 
 { 
+    //编码器模式
+    flagEncoder = 1;
+    
 	if(TIM_GetITStatus(TIM4,TIM_IT_Update)==SET) 
-		{ 
-			if((TIM4->CR1>>4 & 0x01)==0) //DIR==0 
-				circle_count++; 
-			else if((TIM4->CR1>>4 & 0x01)==1)//DIR==1 
-				circle_count--; 
-		} 
+    { 
+        if((TIM4->CR1>>4 & 0x01)==0) //DIR==0 
+            circle_count++; 
+        else if((TIM4->CR1>>4 & 0x01)==1)//DIR==1 
+            circle_count--; 
+    } 
 	TIM_ClearITPendingBit(TIM4,TIM_IT_Update); 
 }
 

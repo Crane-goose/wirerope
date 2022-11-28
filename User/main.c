@@ -8,32 +8,31 @@
 void DewenSet(void);
 void SaveDate(void);
 void HandleDate(void);
+void EncoderMode(void);
+void FreqMode(void);
+void HandleDateEncoder(void);
+void SaveFile(void);
+void SaveBuffer(void);
+
+
 uint8_t count=0;
 uint8_t count_1=0;
-int biaozhi_lb=0;
-int biaozhi_lb_1=0;
 	
 	
 int16_t sum;
-int16_t sum_lb;
 int16_t chan[6];
 
-int biaozhi_bart=0;
-int16_t sum_lb_bart;
 
 
-//uint8_t ucKeyCode;
+
 uint8_t ucRefresh = 0;
 uint8_t ucFifoMode =0;//1;均值 2：采集 3：停止
-//uint16_t storage = 0;
 uint16_t reset = 0;
-//int16_t sum;外部定义
 int32_t add[6];
 int16_t ave[7];
-//int16_t chan[6];
 char buffer[48] = "位置,通道1,通道2,通道3,通道4,通道5,通道6,和通道\n" ;
-int16_t middle = 151;
-int16_t end = 302;
+int16_t middle = 150;
+int16_t end = 300;
 
 uint16_t Mark = 0;
 uint8_t Calibration = 0;
@@ -67,14 +66,6 @@ void delay_us(uint32_t delay_us)
   }
 }
 
-/*
-*********************************************************************************************************
-*	函 数 名: main
-*	功能说明: c程序入口
-*	形    参：无
-*	返 回 值: 错误代码(无需处理)
-*********************************************************************************************************
-*/
 int main(void)
 {
 	delay_us(100000);//短暂延时，确保外设供电	
@@ -103,22 +94,37 @@ int main(void)
 	{
 		bsp_Idle();		/* 空闲时执行的函数,比如喂狗. 在bsp.c中 */
         USBH_Process(&USB_OTG_Core, &USB_Host);
-        DewenSet();
-        HandleDate();
-        SaveDate();
+        
+        EncoderMode();
+        
+        //更换需在encoder文件中更改计数
+        //FreqMode();
+        
+
     }
 
 }
 
+void EncoderMode(void)
+{
+    DewenSet();
+    HandleDateEncoder();
+}
+
+void FreqMode(void)
+{
+    DewenSet();
+    HandleDate();
+    SaveDate();   
+}
 
 void DewenSet(void)
 {
     if(USART_RX_STA&0x8000)
     {
-        comSendChar(COM6, 0x5A);
         if(USART_RX_BUF[5] == 0x20 && USART_RX_BUF[7] == 0x03)//开始采集
         {
-            comSendChar(COM6, 0x5A);
+            len = 0;
             ucFifoMode = 1;
             bsp_StartAutoTimer(0, 2);	
             for (int i = 0; i < 6; i++) 
@@ -136,6 +142,118 @@ void DewenSet(void)
         USART_RX_STA=0;
     }
 }
+
+void HandleDateEncoder(void)
+{
+    //执行停止按钮
+    if (ucFifoMode == 3)	
+    {
+        bsp_StopTimer(1);
+        AD7606_StopRecord();
+        f_close(&file);
+    }	
+    //执行运行按钮
+    if (ucFifoMode == 1)/* 计算500个数的均值 */
+    {
+        if (bsp_CheckTimer(0))
+        {
+            /* 每隔xms 进来一次. 由软件启动转换 */
+            AD7606_ReadNowAdc();		/* 读取采样结果 */
+            AD7606_StartConvst();		/* 启动下次转换 */
+            ucRefresh = 1;	/* 刷新显示 */
+        }			
+        if (ucRefresh == 1)
+        {	
+            ucRefresh = 0;
+            reset++;
+            if(reset>100&&reset<=600)
+            {
+                //计算幅值和编码器距离
+                for(int i = 0; i < 6; i++)
+                {
+                    chan[i] = g_tAD7606.sNowAdc[i]*5000/32768;
+                }
+                
+                for (int i = 0; i < 6; i++) 
+                {
+                    add[i] += chan[i];
+                }
+            }									
+            if(reset==600)
+            {
+                reset=0;
+                for(int i = 0; i < 6; i++) 
+                {
+                    ave[i] = add[i]/500;
+                }
+                ave[6] = ave[0]+ave[1]+ave[2]+ave[3]+ave[4]+ave[5];
+
+                bsp_StopTimer(0);
+                ucFifoMode = 2;	                                
+                f_mount(FS_USB, &fs);
+                f_opendir(&DirInf, "/");
+                f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
+                f_lseek(&file,f_size(&file));
+                f_write(&file,  buffer, sizeof(buffer), &bw);
+                f_sync(&file);                
+            }
+        }
+
+	}
+	if (ucFifoMode == 2)	/* AD7606 普通工作模式 */
+	{
+        if (flagEncoder == 1) 
+        {
+            flagEncoder = 0;
+            AD7606_ReadNowAdc();		/* 读取采样结果 */
+            AD7606_StartConvst();		/* 启动下次转换 */
+            //计算幅值和编码器距离
+            for (int i = 0; i < 6; i++) 
+            {
+                chan[i] = g_tAD7606.sNowAdc[i]*5000/32768 + 200 - ave[i];
+                channel[i] = g_tAD7606.sNowAdc[i]*5000/32768;
+            }
+            sum = chan[0]+chan[1]+chan[2]+chan[3]+chan[4]+chan[5]-600;
+            sumchannel = channel[0]+channel[1]+channel[2]+channel[3]+channel[4]+channel[5];
+            len++;
+            //发送曲线
+            comSendChar(COM1, 0x5A);
+            comSendChar(COM1, 0xA5);
+            comSendChar(COM1, 0x10);
+            comSendChar(COM1, 0x84);
+            comSendChar(COM1, 0x7F);
+            comSendHalfword(COM1,sum);
+            for (int i = 0; i < 6; i++)
+            {
+                comSendHalfword(COM1,chan[i]);
+            }            
+             //发送位置
+            comSendChar(COM1, 0x5A);
+            comSendChar(COM1, 0xA5);
+            comSendChar(COM1, 0x07);
+            comSendChar(COM1, 0x82);
+            comSendChar(COM1, 0x00);
+            comSendChar(COM1, 0x00);
+            comSendword(COM1,len);
+            
+            //保存数据
+            //打印成字符串类型
+            sprintf(bufferSaveLen, " %d" , len);
+            for(int i = 0; i < 6; i++)
+            {
+               sprintf(bufferSaveChannel[i], " %d" , channel[i]); 
+            }
+            sprintf(bufferSaveSum, " %d" , sumchannel);  
+            
+            SaveBuffer();
+            SaveFile();
+            
+
+        }
+     					
+	}
+}
+
 
 void HandleDate(void)
 {
@@ -256,79 +374,89 @@ void SaveDate(void)
            sprintf(bufferSaveChannel[i], " %d" , channel[i]); 
         }
         sprintf(bufferSaveSum, " %d" , sumchannel);
-       
-        if(Mark==end)
-        {
-            Mark=0;
-            
-        }
-        //一次54-6=48个字符
-        if(Mark<middle)
-        {           
-            for(int i = 0; i <10; i++)
-            {
-                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveLen[i];
-                
-            }
-            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
-            for(int j = 0; j < 6; j++) 
-            {
-                for(int i = 1; i < 5; i++)
-                {
-                    g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveChannel[j][i];
-                }
-                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
-            }
-            for(int i = 1; i < 6; i++)
-            {
-                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveSum[i];
-            }               
-            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = '\n';
-        }
-        if(Mark >= middle && Mark < end)
-        {
-            for(int i = 0; i <10; i++)
-            {
-                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveLen[i];
-                
-            }
-            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
-            for(int j = 0; j < 6; j++) 
-            {
-                for(int i = 1; i < 5; i++)
-                {
-                    g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveChannel[j][i];
-                }
-                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
-            }
-            for(int i = 1; i < 6; i++)
-            {
-                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveSum[i];
-            }               
-            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = '\n';
-        }
-
-        Mark++;
         
-        if(Mark == middle)
-        {
-
-            Calibration = 1;
-            g_tAdcFifo.usWrite1 = 0;
-        
-        }
-        if(Mark == end)
-        {
-
-            Calibration = 2;
-            g_tAdcFifo.usWrite2 = 0;
-            
-        }
-           
+        SaveBuffer();     
         biaozhi = 0;
 
     }
-	
+	SaveFile();
+
+}
+
+
+void SaveBuffer(void)
+{
+    if(Mark==end)
+    {
+        Mark=0;
+        
+    }
+    //一次54-6=48个字符
+    if(Mark<middle)
+    {           
+        for(int i = 0; i <10; i++)
+        {
+            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveLen[i];
+            
+        }
+        g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
+        for(int j = 0; j < 6; j++) 
+        {
+            for(int i = 1; i < 5; i++)
+            {
+                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveChannel[j][i];
+            }
+            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
+        }
+        for(int i = 1; i < 6; i++)
+        {
+            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveSum[i];
+        }               
+        g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = '\n';
+    }
+    if(Mark >= middle && Mark < end)
+    {
+        for(int i = 0; i <10; i++)
+        {
+            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveLen[i];
+            
+        }
+        g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
+        for(int j = 0; j < 6; j++) 
+        {
+            for(int i = 1; i < 5; i++)
+            {
+                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveChannel[j][i];
+            }
+            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
+        }
+        for(int i = 1; i < 6; i++)
+        {
+            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveSum[i];
+        }               
+        g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = '\n';
+    }
+
+    Mark++;
+    
+    if(Mark == middle)
+    {
+
+        Calibration = 1;
+        g_tAdcFifo.usWrite1 = 0;
+    
+    }
+    if(Mark == end)
+    {
+
+        Calibration = 2;
+        g_tAdcFifo.usWrite2 = 0;
+        
+    }
+}
+
+void SaveFile(void)
+{
     if(Calibration == 1)
     {
         f_lseek(&file,f_size(&file));

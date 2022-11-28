@@ -5,67 +5,67 @@
                           AREA ||i.Encoder_Init||, CODE, READONLY, ALIGN=1
 
                   Encoder_Init PROC
-;;;70     }
-;;;71     void Encoder_Init(void)
+;;;71     }
+;;;72     void Encoder_Init(void)
 000000  b510              PUSH     {r4,lr}
-;;;72     {
-;;;73     	Encoder_TIM4_IO_Init();
+;;;73     {
+;;;74     	Encoder_TIM4_IO_Init();
 000002  f7fffffe          BL       Encoder_TIM4_IO_Init
-;;;74     	Encoder_TIM4_Init();
+;;;75     	Encoder_TIM4_Init();
 000006  f7fffffe          BL       Encoder_TIM4_Init
-;;;75     }
+;;;76     }
 00000a  bd10              POP      {r4,pc}
-;;;76     /**************************************************************
+;;;77     /**************************************************************
                           ENDP
 
 
                           AREA ||i.Encoder_TIM4_IO_Init||, CODE, READONLY, ALIGN=2
 
                   Encoder_TIM4_IO_Init PROC
-;;;54     
-;;;55     static void Encoder_TIM4_IO_Init(void)
+;;;55     
+;;;56     static void Encoder_TIM4_IO_Init(void)
 000000  b51c              PUSH     {r2-r4,lr}
-;;;56     {
-;;;57     	GPIO_InitTypeDef GPIO_InitStructure;
-;;;58     
-;;;59     	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE); 
+;;;57     {
+;;;58     	GPIO_InitTypeDef GPIO_InitStructure;
+;;;59     
+;;;60     	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE); 
 000002  2101              MOVS     r1,#1
 000004  2002              MOVS     r0,#2
 000006  f7fffffe          BL       RCC_AHB1PeriphClockCmd
-;;;60     
-;;;61     	GPIO_PinAFConfig(GPIOB,GPIO_PinSource6,GPIO_AF_TIM4);
+;;;61     
+;;;62     	GPIO_PinAFConfig(GPIOB,GPIO_PinSource6,GPIO_AF_TIM4);
 00000a  2202              MOVS     r2,#2
 00000c  2106              MOVS     r1,#6
 00000e  480d              LDR      r0,|L2.68|
 000010  f7fffffe          BL       GPIO_PinAFConfig
-;;;62     	GPIO_PinAFConfig(GPIOB,GPIO_PinSource7,GPIO_AF_TIM4);	
+;;;63     	GPIO_PinAFConfig(GPIOB,GPIO_PinSource7,GPIO_AF_TIM4);	
 000014  2202              MOVS     r2,#2
 000016  2107              MOVS     r1,#7
 000018  480a              LDR      r0,|L2.68|
 00001a  f7fffffe          BL       GPIO_PinAFConfig
-;;;63     														   
-;;;64     	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6|GPIO_Pin_7;	
+;;;64     														   
+;;;65     	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6|GPIO_Pin_7;	
 00001e  20c0              MOVS     r0,#0xc0
 000020  9000              STR      r0,[sp,#0]
-;;;65     	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;    
+;;;66     	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;    
 000022  2002              MOVS     r0,#2
 000024  f88d0004          STRB     r0,[sp,#4]
-;;;66     	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+;;;67     	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 000028  2000              MOVS     r0,#0
 00002a  f88d0006          STRB     r0,[sp,#6]
-;;;67     	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;//GPIO_PuPd_UP;//GPIO_PuPd_NOPULL
+;;;68     	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;//GPIO_PuPd_UP;//GPIO_PuPd_NOPULL
 00002e  2002              MOVS     r0,#2
 000030  f88d0007          STRB     r0,[sp,#7]
-;;;68     	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz; 
+;;;69     	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz; 
 000034  2003              MOVS     r0,#3
 000036  f88d0005          STRB     r0,[sp,#5]
-;;;69     	GPIO_Init(GPIOB, &GPIO_InitStructure);
+;;;70     	GPIO_Init(GPIOB, &GPIO_InitStructure);
 00003a  4669              MOV      r1,sp
 00003c  4801              LDR      r0,|L2.68|
 00003e  f7fffffe          BL       GPIO_Init
-;;;70     }
+;;;71     }
 000042  bd1c              POP      {r2-r4,pc}
-;;;71     void Encoder_Init(void)
+;;;72     void Encoder_Init(void)
                           ENDP
 
                   |L2.68|
@@ -88,159 +88,168 @@
 000006  2004              MOVS     r0,#4
 000008  f7fffffe          BL       RCC_APB1PeriphClockCmd
 ;;;15     	
-;;;16       TIM_TimeBaseInitStructure.TIM_Period = 2399;//20; 	//自动重装载值
-00000c  f640105f          MOV      r0,#0x95f
-000010  9005              STR      r0,[sp,#0x14]
-;;;17     	TIM_TimeBaseInitStructure.TIM_Prescaler=0;  //定时器分频
-000012  2000              MOVS     r0,#0
-000014  f8ad0010          STRH     r0,[sp,#0x10]
-;;;18     	TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up; //向上计数模式
-000018  f8ad0012          STRH     r0,[sp,#0x12]
-;;;19     	TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
-00001c  f8ad0018          STRH     r0,[sp,#0x18]
-;;;20     	
-;;;21     	TIM_TimeBaseInit(TIM4,&TIM_TimeBaseInitStructure);//初始化TIM5
-000020  a904              ADD      r1,sp,#0x10
-000022  4820              LDR      r0,|L3.164|
-000024  f7fffffe          BL       TIM_TimeBaseInit
-;;;22     	
-;;;23     	TIM_EncoderInterfaceConfig(TIM4,TIM_EncoderMode_TI12,TIM_ICPolarity_Rising,TIM_ICPolarity_Rising);
-000028  2300              MOVS     r3,#0
-00002a  461a              MOV      r2,r3
-00002c  2103              MOVS     r1,#3
-00002e  481d              LDR      r0,|L3.164|
-000030  f7fffffe          BL       TIM_EncoderInterfaceConfig
-;;;24     	
-;;;25     	TIM_ICStructInit(&TIM_ICInitStructure);
-000034  a801              ADD      r0,sp,#4
-000036  f7fffffe          BL       TIM_ICStructInit
-;;;26     	
-;;;27     	TIM_ICInitStructure.TIM_Channel = TIM_Channel_1 ;	
-00003a  2000              MOVS     r0,#0
-00003c  f8ad0004          STRH     r0,[sp,#4]
-;;;28     	TIM_ICInitStructure.TIM_ICFilter = 0; //最大为15
-000040  f8ad000c          STRH     r0,[sp,#0xc]
-;;;29     	TIM_ICInit(TIM4, &TIM_ICInitStructure);
-000044  a901              ADD      r1,sp,#4
-000046  4817              LDR      r0,|L3.164|
-000048  f7fffffe          BL       TIM_ICInit
-;;;30     	
-;;;31     	TIM_ICInitStructure.TIM_Channel = TIM_Channel_2 ;	
-00004c  2004              MOVS     r0,#4
-00004e  f8ad0004          STRH     r0,[sp,#4]
-;;;32     	TIM_ICInitStructure.TIM_ICFilter = 0;
-000052  2000              MOVS     r0,#0
-000054  f8ad000c          STRH     r0,[sp,#0xc]
-;;;33     	TIM_ICInit(TIM4, &TIM_ICInitStructure);
-000058  a901              ADD      r1,sp,#4
-00005a  4812              LDR      r0,|L3.164|
-00005c  f7fffffe          BL       TIM_ICInit
-;;;34     
+;;;16         TIM_TimeBaseInitStructure.TIM_Period = 8;//20; 	//自动重装载值
+00000c  2008              MOVS     r0,#8
+00000e  9005              STR      r0,[sp,#0x14]
+;;;17         //TIM_TimeBaseInitStructure.TIM_Period = 2399;//20; 	//自动重装载值
+;;;18     	TIM_TimeBaseInitStructure.TIM_Prescaler=0;  //定时器分频
+000010  2000              MOVS     r0,#0
+000012  f8ad0010          STRH     r0,[sp,#0x10]
+;;;19     	TIM_TimeBaseInitStructure.TIM_CounterMode=TIM_CounterMode_Up; //向上计数模式
+000016  f8ad0012          STRH     r0,[sp,#0x12]
+;;;20     	TIM_TimeBaseInitStructure.TIM_ClockDivision=TIM_CKD_DIV1; 
+00001a  f8ad0018          STRH     r0,[sp,#0x18]
+;;;21     	
+;;;22     	TIM_TimeBaseInit(TIM4,&TIM_TimeBaseInitStructure);//初始化TIM5
+00001e  a904              ADD      r1,sp,#0x10
+000020  481f              LDR      r0,|L3.160|
+000022  f7fffffe          BL       TIM_TimeBaseInit
+;;;23     	
+;;;24     	TIM_EncoderInterfaceConfig(TIM4,TIM_EncoderMode_TI12,TIM_ICPolarity_Rising,TIM_ICPolarity_Rising);
+000026  2300              MOVS     r3,#0
+000028  461a              MOV      r2,r3
+00002a  2103              MOVS     r1,#3
+00002c  481c              LDR      r0,|L3.160|
+00002e  f7fffffe          BL       TIM_EncoderInterfaceConfig
+;;;25     	
+;;;26     	TIM_ICStructInit(&TIM_ICInitStructure);
+000032  a801              ADD      r0,sp,#4
+000034  f7fffffe          BL       TIM_ICStructInit
+;;;27     	
+;;;28     	TIM_ICInitStructure.TIM_Channel = TIM_Channel_1 ;	
+000038  2000              MOVS     r0,#0
+00003a  f8ad0004          STRH     r0,[sp,#4]
+;;;29     	TIM_ICInitStructure.TIM_ICFilter = 0; //最大为15
+00003e  f8ad000c          STRH     r0,[sp,#0xc]
+;;;30     	TIM_ICInit(TIM4, &TIM_ICInitStructure);
+000042  a901              ADD      r1,sp,#4
+000044  4816              LDR      r0,|L3.160|
+000046  f7fffffe          BL       TIM_ICInit
+;;;31     	
+;;;32     	TIM_ICInitStructure.TIM_Channel = TIM_Channel_2 ;	
+00004a  2004              MOVS     r0,#4
+00004c  f8ad0004          STRH     r0,[sp,#4]
+;;;33     	TIM_ICInitStructure.TIM_ICFilter = 0;
+000050  2000              MOVS     r0,#0
+000052  f8ad000c          STRH     r0,[sp,#0xc]
+;;;34     	TIM_ICInit(TIM4, &TIM_ICInitStructure);
+000056  a901              ADD      r1,sp,#4
+000058  4811              LDR      r0,|L3.160|
+00005a  f7fffffe          BL       TIM_ICInit
 ;;;35     
-;;;36     	//溢出中断设置
-;;;37     	 TIM_ITConfig(TIM4,TIM_IT_Update,ENABLE); //允许TIM4溢出中断 
-000060  2201              MOVS     r2,#1
-000062  4611              MOV      r1,r2
-000064  480f              LDR      r0,|L3.164|
-000066  f7fffffe          BL       TIM_ITConfig
-;;;38     	 
-;;;39     	 NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
-00006a  f44f60c0          MOV      r0,#0x600
-00006e  f7fffffe          BL       NVIC_PriorityGroupConfig
-;;;40     	 
-;;;41     	 NVIC_InitStructure.NVIC_IRQChannel=TIM4_IRQn; 
-000072  201e              MOVS     r0,#0x1e
-000074  f88d0000          STRB     r0,[sp,#0]
-;;;42     	 NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0x00; 
-000078  2000              MOVS     r0,#0
-00007a  f88d0001          STRB     r0,[sp,#1]
-;;;43     	 NVIC_InitStructure.NVIC_IRQChannelSubPriority=0x00; 
-00007e  f88d0002          STRB     r0,[sp,#2]
-;;;44     	 NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE; 
-000082  2001              MOVS     r0,#1
-000084  f88d0003          STRB     r0,[sp,#3]
-;;;45     	 NVIC_Init(&NVIC_InitStructure);
-000088  4668              MOV      r0,sp
-00008a  f7fffffe          BL       NVIC_Init
-;;;46     
-;;;47     	
-;;;48     	TIM_SetCounter(TIM4,0);//应该不能为0
-00008e  2100              MOVS     r1,#0
-000090  4804              LDR      r0,|L3.164|
-000092  f7fffffe          BL       TIM_SetCounter
-;;;49     	
-;;;50     	TIM_Cmd(TIM4,ENABLE);
-000096  2101              MOVS     r1,#1
-000098  4802              LDR      r0,|L3.164|
-00009a  f7fffffe          BL       TIM_Cmd
-;;;51     }
-00009e  b007              ADD      sp,sp,#0x1c
-0000a0  bd00              POP      {pc}
-;;;52     #define Get_count TIM_GetCounter(TIM4)
+;;;36     
+;;;37     	//溢出中断设置
+;;;38     	 TIM_ITConfig(TIM4,TIM_IT_Update,ENABLE); //允许TIM4溢出中断 
+00005e  2201              MOVS     r2,#1
+000060  4611              MOV      r1,r2
+000062  480f              LDR      r0,|L3.160|
+000064  f7fffffe          BL       TIM_ITConfig
+;;;39     	 
+;;;40     	 NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+000068  f44f60c0          MOV      r0,#0x600
+00006c  f7fffffe          BL       NVIC_PriorityGroupConfig
+;;;41     	 
+;;;42     	 NVIC_InitStructure.NVIC_IRQChannel=TIM4_IRQn; 
+000070  201e              MOVS     r0,#0x1e
+000072  f88d0000          STRB     r0,[sp,#0]
+;;;43     	 NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0x00; 
+000076  2000              MOVS     r0,#0
+000078  f88d0001          STRB     r0,[sp,#1]
+;;;44     	 NVIC_InitStructure.NVIC_IRQChannelSubPriority=0x00; 
+00007c  f88d0002          STRB     r0,[sp,#2]
+;;;45     	 NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE; 
+000080  2001              MOVS     r0,#1
+000082  f88d0003          STRB     r0,[sp,#3]
+;;;46     	 NVIC_Init(&NVIC_InitStructure);
+000086  4668              MOV      r0,sp
+000088  f7fffffe          BL       NVIC_Init
+;;;47     
+;;;48     	
+;;;49     	TIM_SetCounter(TIM4, 0);//应该不能为0
+00008c  2100              MOVS     r1,#0
+00008e  4804              LDR      r0,|L3.160|
+000090  f7fffffe          BL       TIM_SetCounter
+;;;50     	
+;;;51     	TIM_Cmd(TIM4,ENABLE);
+000094  2101              MOVS     r1,#1
+000096  4802              LDR      r0,|L3.160|
+000098  f7fffffe          BL       TIM_Cmd
+;;;52     }
+00009c  b007              ADD      sp,sp,#0x1c
+00009e  bd00              POP      {pc}
+;;;53     #define Get_count TIM_GetCounter(TIM4)
                           ENDP
 
-0000a2  0000              DCW      0x0000
-                  |L3.164|
+                  |L3.160|
                           DCD      0x40000800
 
                           AREA ||i.TIM4_IRQHandler||, CODE, READONLY, ALIGN=2
 
                   TIM4_IRQHandler PROC
-;;;79     int circle_count=0;//全局变量-圈数
-;;;80     void TIM4_IRQHandler(void) 
+;;;81     int flagEncoder = 0;
+;;;82     void TIM4_IRQHandler(void) 
 000000  b510              PUSH     {r4,lr}
-;;;81     { 
-;;;82     	if(TIM_GetITStatus(TIM4,TIM_IT_Update)==SET) 
-000002  2101              MOVS     r1,#1
-000004  480f              LDR      r0,|L4.68|
-000006  f7fffffe          BL       TIM_GetITStatus
-00000a  2801              CMP      r0,#1
-00000c  d114              BNE      |L4.56|
-;;;83     		{ 
-;;;84     			if((TIM4->CR1>>4 & 0x01)==0) //DIR==0 
-00000e  480d              LDR      r0,|L4.68|
-000010  8800              LDRH     r0,[r0,#0]
-000012  f3c01000          UBFX     r0,r0,#4,#1
-000016  b928              CBNZ     r0,|L4.36|
-;;;85     				circle_count++; 
-000018  480b              LDR      r0,|L4.72|
-00001a  6800              LDR      r0,[r0,#0]  ; circle_count
-00001c  1c40              ADDS     r0,r0,#1
-00001e  490a              LDR      r1,|L4.72|
-000020  6008              STR      r0,[r1,#0]  ; circle_count
-000022  e009              B        |L4.56|
-                  |L4.36|
-;;;86     			else if((TIM4->CR1>>4 & 0x01)==1)//DIR==1 
-000024  4807              LDR      r0,|L4.68|
-000026  8800              LDRH     r0,[r0,#0]
-000028  f3c01000          UBFX     r0,r0,#4,#1
-00002c  b120              CBZ      r0,|L4.56|
-;;;87     				circle_count--; 
-00002e  4806              LDR      r0,|L4.72|
-000030  6800              LDR      r0,[r0,#0]  ; circle_count
-000032  1e40              SUBS     r0,r0,#1
-000034  4904              LDR      r1,|L4.72|
-000036  6008              STR      r0,[r1,#0]  ; circle_count
-                  |L4.56|
-;;;88     		} 
-;;;89     	TIM_ClearITPendingBit(TIM4,TIM_IT_Update); 
-000038  2101              MOVS     r1,#1
-00003a  4802              LDR      r0,|L4.68|
-00003c  f7fffffe          BL       TIM_ClearITPendingBit
-;;;90     }
-000040  bd10              POP      {r4,pc}
-;;;91     
+;;;83     { 
+;;;84         //编码器模式
+;;;85         flagEncoder = 1;
+000002  2001              MOVS     r0,#1
+000004  4910              LDR      r1,|L4.72|
+000006  6008              STR      r0,[r1,#0]  ; flagEncoder
+;;;86         
+;;;87     	if(TIM_GetITStatus(TIM4,TIM_IT_Update)==SET) 
+000008  2101              MOVS     r1,#1
+00000a  4810              LDR      r0,|L4.76|
+00000c  f7fffffe          BL       TIM_GetITStatus
+000010  2801              CMP      r0,#1
+000012  d114              BNE      |L4.62|
+;;;88         { 
+;;;89             if((TIM4->CR1>>4 & 0x01)==0) //DIR==0 
+000014  480d              LDR      r0,|L4.76|
+000016  8800              LDRH     r0,[r0,#0]
+000018  f3c01000          UBFX     r0,r0,#4,#1
+00001c  b928              CBNZ     r0,|L4.42|
+;;;90                 circle_count++; 
+00001e  480c              LDR      r0,|L4.80|
+000020  6800              LDR      r0,[r0,#0]  ; circle_count
+000022  1c40              ADDS     r0,r0,#1
+000024  490a              LDR      r1,|L4.80|
+000026  6008              STR      r0,[r1,#0]  ; circle_count
+000028  e009              B        |L4.62|
+                  |L4.42|
+;;;91             else if((TIM4->CR1>>4 & 0x01)==1)//DIR==1 
+00002a  4808              LDR      r0,|L4.76|
+00002c  8800              LDRH     r0,[r0,#0]
+00002e  f3c01000          UBFX     r0,r0,#4,#1
+000032  b120              CBZ      r0,|L4.62|
+;;;92                 circle_count--; 
+000034  4806              LDR      r0,|L4.80|
+000036  6800              LDR      r0,[r0,#0]  ; circle_count
+000038  1e40              SUBS     r0,r0,#1
+00003a  4905              LDR      r1,|L4.80|
+00003c  6008              STR      r0,[r1,#0]  ; circle_count
+                  |L4.62|
+;;;93         } 
+;;;94     	TIM_ClearITPendingBit(TIM4,TIM_IT_Update); 
+00003e  2101              MOVS     r1,#1
+000040  4802              LDR      r0,|L4.76|
+000042  f7fffffe          BL       TIM_ClearITPendingBit
+;;;95     }
+000046  bd10              POP      {r4,pc}
+;;;96     
                           ENDP
 
-000042  0000              DCW      0x0000
-                  |L4.68|
-                          DCD      0x40000800
                   |L4.72|
+                          DCD      flagEncoder
+                  |L4.76|
+                          DCD      0x40000800
+                  |L4.80|
                           DCD      circle_count
 
                           AREA ||.data||, DATA, ALIGN=2
 
                   circle_count
+                          DCD      0x00000000
+                  flagEncoder
                           DCD      0x00000000
 
 ;*** Start embedded assembler ***
