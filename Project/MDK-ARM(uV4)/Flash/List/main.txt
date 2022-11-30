@@ -5,17 +5,17 @@
                           AREA ||i.DewenSet||, CODE, READONLY, ALIGN=2
 
                   DewenSet PROC
-;;;120    
-;;;121    void DewenSet(void)
+;;;123    
+;;;124    void DewenSet(void)
 000000  b510              PUSH     {r4,lr}
-;;;122    {
-;;;123        if(USART_RX_STA&0x8000)
+;;;125    {
+;;;126        if(USART_RX_STA&0x8000)
 000002  481a              LDR      r0,|L1.108|
 000004  8800              LDRH     r0,[r0,#0]  ; USART_RX_STA
 000006  f4004000          AND      r0,r0,#0x8000
 00000a  b370              CBZ      r0,|L1.106|
-;;;124        {
-;;;125            if(USART_RX_BUF[5] == 0x20 && USART_RX_BUF[7] == 0x03)//开始采集
+;;;127        {
+;;;128            if(USART_RX_BUF[5] == 0x20 && USART_RX_BUF[7] == 0x03)//开始采集
 00000c  4818              LDR      r0,|L1.112|
 00000e  7940              LDRB     r0,[r0,#5]  ; USART_RX_BUF
 000010  2820              CMP      r0,#0x20
@@ -24,44 +24,44 @@
 000016  79c0              LDRB     r0,[r0,#7]  ; USART_RX_BUF
 000018  2803              CMP      r0,#3
 00001a  d118              BNE      |L1.78|
-;;;126            {
-;;;127                len = 0;
+;;;129            {
+;;;130                len = 0;
 00001c  2000              MOVS     r0,#0
 00001e  4915              LDR      r1,|L1.116|
 000020  6008              STR      r0,[r1,#0]  ; len
-;;;128                ucFifoMode = 1;
+;;;131                ucFifoMode = 1;
 000022  2001              MOVS     r0,#1
 000024  4914              LDR      r1,|L1.120|
 000026  7008              STRB     r0,[r1,#0]
-;;;129                bsp_StartAutoTimer(0, 2);	
+;;;132                bsp_StartAutoTimer(0, 2);	
 000028  2102              MOVS     r1,#2
 00002a  2000              MOVS     r0,#0
 00002c  f7fffffe          BL       bsp_StartAutoTimer
-;;;130                for (int i = 0; i < 6; i++) 
+;;;133                for (int i = 0; i < 6; i++) 
 000030  2000              MOVS     r0,#0
 000032  e007              B        |L1.68|
                   |L1.52|
-;;;131                {
-;;;132                    add[i] = 0;
+;;;134                {
+;;;135                    add[i] = 0;
 000034  2100              MOVS     r1,#0
 000036  4a11              LDR      r2,|L1.124|
 000038  f8421020          STR      r1,[r2,r0,LSL #2]
-;;;133                    ave[i] = 0;
+;;;136                    ave[i] = 0;
 00003c  4a10              LDR      r2,|L1.128|
 00003e  f8221010          STRH     r1,[r2,r0,LSL #1]
-000042  1c40              ADDS     r0,r0,#1              ;130
+000042  1c40              ADDS     r0,r0,#1              ;133
                   |L1.68|
-000044  2806              CMP      r0,#6                 ;130
+000044  2806              CMP      r0,#6                 ;133
 000046  dbf5              BLT      |L1.52|
-;;;134                }
-;;;135                ave[6] = 0;
+;;;137                }
+;;;138                ave[6] = 0;
 000048  2000              MOVS     r0,#0
 00004a  490d              LDR      r1,|L1.128|
 00004c  8188              STRH     r0,[r1,#0xc]
                   |L1.78|
-;;;136            }
-;;;137    
-;;;138            if(USART_RX_BUF[5] == 0x10 && USART_RX_BUF[7] == 0x01)//停止采集
+;;;139            }
+;;;140    
+;;;141            if(USART_RX_BUF[5] == 0x10 && USART_RX_BUF[7] == 0x01)//停止采集
 00004e  4808              LDR      r0,|L1.112|
 000050  7940              LDRB     r0,[r0,#5]  ; USART_RX_BUF
 000052  2810              CMP      r0,#0x10
@@ -70,22 +70,22 @@
 000058  79c0              LDRB     r0,[r0,#7]  ; USART_RX_BUF
 00005a  2801              CMP      r0,#1
 00005c  d102              BNE      |L1.100|
-;;;139            {															
-;;;140                ucFifoMode = 3;
+;;;142            {															
+;;;143                ucFifoMode = 3;
 00005e  2003              MOVS     r0,#3
 000060  4905              LDR      r1,|L1.120|
 000062  7008              STRB     r0,[r1,#0]
                   |L1.100|
-;;;141            }		
-;;;142            USART_RX_STA=0;
+;;;144            }		
+;;;145            USART_RX_STA=0;
 000064  2000              MOVS     r0,#0
 000066  4901              LDR      r1,|L1.108|
 000068  8008              STRH     r0,[r1,#0]
                   |L1.106|
-;;;143        }
-;;;144    }
+;;;146        }
+;;;147    }
 00006a  bd10              POP      {r4,pc}
-;;;145    
+;;;148    
                           ENDP
 
                   |L1.108|
@@ -104,104 +104,104 @@
                           AREA ||i.EncoderMode||, CODE, READONLY, ALIGN=1
 
                   EncoderMode PROC
-;;;107    
-;;;108    void EncoderMode(void)
+;;;110    
+;;;111    void EncoderMode(void)
 000000  b510              PUSH     {r4,lr}
-;;;109    {
-;;;110        DewenSet();
+;;;112    {
+;;;113        DewenSet();
 000002  f7fffffe          BL       DewenSet
-;;;111        HandleDateEncoder();
+;;;114        HandleDateEncoder();
 000006  f7fffffe          BL       HandleDateEncoder
-;;;112    }
+;;;115    }
 00000a  bd10              POP      {r4,pc}
-;;;113    
+;;;116    
                           ENDP
 
 
                           AREA ||i.FreqMode||, CODE, READONLY, ALIGN=1
 
                   FreqMode PROC
-;;;113    
-;;;114    void FreqMode(void)
+;;;116    
+;;;117    void FreqMode(void)
 000000  b510              PUSH     {r4,lr}
-;;;115    {
-;;;116        DewenSet();
+;;;118    {
+;;;119        DewenSet();
 000002  f7fffffe          BL       DewenSet
-;;;117        HandleDate();
+;;;120        HandleDate();
 000006  f7fffffe          BL       HandleDate
-;;;118        SaveDate();   
+;;;121        SaveDate();   
 00000a  f7fffffe          BL       SaveDate
-;;;119    }
+;;;122    }
 00000e  bd10              POP      {r4,pc}
-;;;120    
+;;;123    
                           ENDP
 
 
                           AREA ||i.HandleDate||, CODE, READONLY, ALIGN=2
 
                   HandleDate PROC
-;;;257    
-;;;258    void HandleDate(void)
+;;;269    
+;;;270    void HandleDate(void)
 000000  b510              PUSH     {r4,lr}
-;;;259    {
-;;;260        //执行停止按钮
-;;;261        if (ucFifoMode == 3)	
+;;;271    {
+;;;272        //执行停止按钮
+;;;273        if (ucFifoMode == 3)	
 000002  4897              LDR      r0,|L4.608|
 000004  7800              LDRB     r0,[r0,#0]  ; ucFifoMode
 000006  2803              CMP      r0,#3
 000008  d107              BNE      |L4.26|
-;;;262        {
-;;;263            bsp_StopTimer(1);
+;;;274        {
+;;;275            bsp_StopTimer(1);
 00000a  2001              MOVS     r0,#1
 00000c  f7fffffe          BL       bsp_StopTimer
-;;;264            AD7606_StopRecord();
+;;;276            AD7606_StopRecord();
 000010  f7fffffe          BL       AD7606_StopRecord
-;;;265            f_close(&file);
+;;;277            f_close(&file);
 000014  4893              LDR      r0,|L4.612|
 000016  f7fffffe          BL       f_close
                   |L4.26|
-;;;266        }	
-;;;267        //执行运行按钮
-;;;268        if (ucFifoMode == 1)/* 计算500个数的均值 */
+;;;278        }	
+;;;279        //执行运行按钮
+;;;280        if (ucFifoMode == 1)/* 计算500个数的均值 */
 00001a  4891              LDR      r0,|L4.608|
 00001c  7800              LDRB     r0,[r0,#0]  ; ucFifoMode
 00001e  2801              CMP      r0,#1
                   |L4.32|
 000020  d17e              BNE      |L4.288|
-;;;269        {
-;;;270            if (bsp_CheckTimer(0))
+;;;281        {
+;;;282            if (bsp_CheckTimer(0))
 000022  2000              MOVS     r0,#0
 000024  f7fffffe          BL       bsp_CheckTimer
 000028  b130              CBZ      r0,|L4.56|
-;;;271            {
-;;;272                /* 每隔xms 进来一次. 由软件启动转换 */
-;;;273                AD7606_ReadNowAdc();		/* 读取采样结果 */
+;;;283            {
+;;;284                /* 每隔xms 进来一次. 由软件启动转换 */
+;;;285                AD7606_ReadNowAdc();		/* 读取采样结果 */
 00002a  f7fffffe          BL       AD7606_ReadNowAdc
-;;;274                AD7606_StartConvst();		/* 启动下次转换 */
+;;;286                AD7606_StartConvst();		/* 启动下次转换 */
 00002e  f7fffffe          BL       AD7606_StartConvst
-;;;275                ucRefresh = 1;	/* 刷新显示 */
+;;;287                ucRefresh = 1;	/* 刷新显示 */
 000032  2001              MOVS     r0,#1
 000034  498c              LDR      r1,|L4.616|
 000036  7008              STRB     r0,[r1,#0]
                   |L4.56|
-;;;276            }			
-;;;277            if (ucRefresh == 1)
+;;;288            }			
+;;;289            if (ucRefresh == 1)
 000038  488b              LDR      r0,|L4.616|
 00003a  7800              LDRB     r0,[r0,#0]  ; ucRefresh
 00003c  2801              CMP      r0,#1
 00003e  d1ef              BNE      |L4.32|
-;;;278            {	
-;;;279                ucRefresh = 0;
+;;;290            {	
+;;;291                ucRefresh = 0;
 000040  2000              MOVS     r0,#0
 000042  4989              LDR      r1,|L4.616|
 000044  7008              STRB     r0,[r1,#0]
-;;;280                reset++;
+;;;292                reset++;
 000046  4889              LDR      r0,|L4.620|
 000048  8800              LDRH     r0,[r0,#0]  ; reset
 00004a  1c40              ADDS     r0,r0,#1
 00004c  4987              LDR      r1,|L4.620|
 00004e  8008              STRH     r0,[r1,#0]
-;;;281                if(reset>100&&reset<=600)
+;;;293                if(reset>100&&reset<=600)
 000050  4608              MOV      r0,r1
 000052  8800              LDRH     r0,[r0,#0]  ; reset
 000054  2864              CMP      r0,#0x64
@@ -210,14 +210,14 @@
 00005a  8800              LDRH     r0,[r0,#0]  ; reset
 00005c  f5b07f16          CMP      r0,#0x258
 000060  dc21              BGT      |L4.166|
-;;;282                {
-;;;283                    //计算幅值和编码器距离
-;;;284                    for(int i = 0; i < 6; i++)
+;;;294                {
+;;;295                    //计算幅值和编码器距离
+;;;296                    for(int i = 0; i < 6; i++)
 000062  2000              MOVS     r0,#0
 000064  e00e              B        |L4.132|
                   |L4.102|
-;;;285                    {
-;;;286                        chan[i] = g_tAD7606.sNowAdc[i]*5000/32768;
+;;;297                    {
+;;;298                        chan[i] = g_tAD7606.sNowAdc[i]*5000/32768;
 000066  4a82              LDR      r2,|L4.624|
 000068  f8322010          LDRH     r2,[r2,r0,LSL #1]
 00006c  f2413388          MOV      r3,#0x1388
@@ -227,18 +227,18 @@
 00007a  13d2              ASRS     r2,r2,#15
 00007c  4b7d              LDR      r3,|L4.628|
 00007e  f8232010          STRH     r2,[r3,r0,LSL #1]
-000082  1c40              ADDS     r0,r0,#1              ;284
+000082  1c40              ADDS     r0,r0,#1              ;296
                   |L4.132|
-000084  2806              CMP      r0,#6                 ;284
+000084  2806              CMP      r0,#6                 ;296
 000086  dbee              BLT      |L4.102|
-;;;287                    }
-;;;288                    
-;;;289                    for (int i = 0; i < 6; i++) 
+;;;299                    }
+;;;300                    
+;;;301                    for (int i = 0; i < 6; i++) 
 000088  2000              MOVS     r0,#0
 00008a  e00a              B        |L4.162|
                   |L4.140|
-;;;290                    {
-;;;291                        add[i] += chan[i];
+;;;302                    {
+;;;303                        add[i] += chan[i];
 00008c  497a              LDR      r1,|L4.632|
 00008e  f8511020          LDR      r1,[r1,r0,LSL #2]
 000092  4a78              LDR      r2,|L4.628|
@@ -246,29 +246,29 @@
 000098  4411              ADD      r1,r1,r2
 00009a  4a77              LDR      r2,|L4.632|
 00009c  f8421020          STR      r1,[r2,r0,LSL #2]
-0000a0  1c40              ADDS     r0,r0,#1              ;289
+0000a0  1c40              ADDS     r0,r0,#1              ;301
                   |L4.162|
-0000a2  2806              CMP      r0,#6                 ;289
+0000a2  2806              CMP      r0,#6                 ;301
 0000a4  dbf2              BLT      |L4.140|
                   |L4.166|
-;;;292                    }
-;;;293                }									
-;;;294                if(reset==600)
+;;;304                    }
+;;;305                }									
+;;;306                if(reset==600)
 0000a6  4871              LDR      r0,|L4.620|
 0000a8  8800              LDRH     r0,[r0,#0]  ; reset
 0000aa  f5b07f16          CMP      r0,#0x258
 0000ae  d150              BNE      |L4.338|
-;;;295                {
-;;;296                    reset=0;
+;;;307                {
+;;;308                    reset=0;
 0000b0  2000              MOVS     r0,#0
 0000b2  496e              LDR      r1,|L4.620|
 0000b4  8008              STRH     r0,[r1,#0]
-;;;297                    for(int i = 0; i < 6; i++) 
+;;;309                    for(int i = 0; i < 6; i++) 
 0000b6  bf00              NOP      
 0000b8  e00b              B        |L4.210|
                   |L4.186|
-;;;298                    {
-;;;299                        ave[i] = add[i]/500;
+;;;310                    {
+;;;311                        ave[i] = add[i]/500;
 0000ba  496f              LDR      r1,|L4.632|
 0000bc  f8511020          LDR      r1,[r1,r0,LSL #2]
 0000c0  f44f72fa          MOV      r2,#0x1f4
@@ -276,12 +276,12 @@
 0000c8  b209              SXTH     r1,r1
 0000ca  4a6c              LDR      r2,|L4.636|
 0000cc  f8221010          STRH     r1,[r2,r0,LSL #1]
-0000d0  1c40              ADDS     r0,r0,#1              ;297
+0000d0  1c40              ADDS     r0,r0,#1              ;309
                   |L4.210|
-0000d2  2806              CMP      r0,#6                 ;297
+0000d2  2806              CMP      r0,#6                 ;309
 0000d4  dbf1              BLT      |L4.186|
-;;;300                    }
-;;;301                    ave[6] = ave[0]+ave[1]+ave[2]+ave[3]+ave[4]+ave[5];
+;;;312                    }
+;;;313                    ave[6] = ave[0]+ave[1]+ave[2]+ave[3]+ave[4]+ave[5];
 0000d6  4869              LDR      r0,|L4.636|
 0000d8  8800              LDRH     r0,[r0,#0]  ; ave
 0000da  4968              LDR      r1,|L4.636|
@@ -302,25 +302,25 @@
 0000f8  b200              SXTH     r0,r0
 0000fa  4960              LDR      r1,|L4.636|
 0000fc  8188              STRH     r0,[r1,#0xc]
-;;;302    
-;;;303                    bsp_StopTimer(0);
+;;;314    
+;;;315                    bsp_StopTimer(0);
 0000fe  2000              MOVS     r0,#0
 000100  f7fffffe          BL       bsp_StopTimer
-;;;304                    ucFifoMode = 2;
+;;;316                    ucFifoMode = 2;
 000104  2002              MOVS     r0,#2
 000106  4956              LDR      r1,|L4.608|
 000108  7008              STRB     r0,[r1,#0]
-;;;305                    //显示时间更改
-;;;306                    bsp_StartAutoTimer(1, 2);	
+;;;317                    //显示时间更改
+;;;318                    bsp_StartAutoTimer(1, 2);	
 00010a  2102              MOVS     r1,#2
 00010c  2001              MOVS     r0,#1
 00010e  f7fffffe          BL       bsp_StartAutoTimer
-;;;307                                    
-;;;308                    f_mount(FS_USB, &fs);
+;;;319                                    
+;;;320                    f_mount(FS_USB, &fs);
 000112  495b              LDR      r1,|L4.640|
 000114  2000              MOVS     r0,#0
 000116  f7fffffe          BL       f_mount
-;;;309                    f_opendir(&DirInf, "/");
+;;;321                    f_opendir(&DirInf, "/");
 00011a  a15a              ADR      r1,|L4.644|
 00011c  485a              LDR      r0,|L4.648|
 00011e  e000              B        |L4.290|
@@ -328,67 +328,67 @@
 000120  e017              B        |L4.338|
                   |L4.290|
 000122  f7fffffe          BL       f_opendir
-;;;310                    f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
+;;;322                    f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
 000126  2212              MOVS     r2,#0x12
 000128  a158              ADR      r1,|L4.652|
 00012a  484e              LDR      r0,|L4.612|
 00012c  f7fffffe          BL       f_open
-;;;311                    f_lseek(&file,f_size(&file));
+;;;323                    f_lseek(&file,f_size(&file));
 000130  484c              LDR      r0,|L4.612|
 000132  68c1              LDR      r1,[r0,#0xc]  ; file
 000134  f7fffffe          BL       f_lseek
-;;;312                    f_write(&file,  buffer, sizeof(buffer), &bw);
+;;;324                    f_write(&file,  buffer, sizeof(buffer), &bw);
 000138  4b58              LDR      r3,|L4.668|
 00013a  2230              MOVS     r2,#0x30
 00013c  4958              LDR      r1,|L4.672|
 00013e  4849              LDR      r0,|L4.612|
 000140  f7fffffe          BL       f_write
-;;;313                    f_sync(&file);                
+;;;325                    f_sync(&file);                
 000144  4847              LDR      r0,|L4.612|
 000146  f7fffffe          BL       f_sync
-;;;314                    //设置采集频率
-;;;315                    AD7606_StartRecord(2000);
+;;;326                    //设置采集频率
+;;;327                    AD7606_StartRecord(2000);
 00014a  f44f60fa          MOV      r0,#0x7d0
 00014e  f7fffffe          BL       AD7606_StartRecord
                   |L4.338|
-;;;316                }
-;;;317            }
-;;;318    
-;;;319    	}
-;;;320    	if (ucFifoMode == 2)	/* AD7606 普通工作模式 */
+;;;328                }
+;;;329            }
+;;;330    
+;;;331    	}
+;;;332    	if (ucFifoMode == 2)	/* AD7606 普通工作模式 */
 000152  4843              LDR      r0,|L4.608|
 000154  7800              LDRB     r0,[r0,#0]  ; ucFifoMode
 000156  2802              CMP      r0,#2
 000158  d17e              BNE      |L4.600|
-;;;321    	{		
-;;;322    		if (bsp_CheckTimer(1))
+;;;333    	{		
+;;;334    		if (bsp_CheckTimer(1))
 00015a  2001              MOVS     r0,#1
 00015c  f7fffffe          BL       bsp_CheckTimer
 000160  b110              CBZ      r0,|L4.360|
-;;;323            {
-;;;324                ucRefresh = 2;	/* 刷新显示 */
+;;;335            {
+;;;336                ucRefresh = 2;	/* 刷新显示 */
 000162  2002              MOVS     r0,#2
 000164  4940              LDR      r1,|L4.616|
 000166  7008              STRB     r0,[r1,#0]
                   |L4.360|
-;;;325            }
-;;;326    		if (ucRefresh == 2)
+;;;337            }
+;;;338    		if (ucRefresh == 2)
 000168  483f              LDR      r0,|L4.616|
 00016a  7800              LDRB     r0,[r0,#0]  ; ucRefresh
 00016c  2802              CMP      r0,#2
 00016e  d176              BNE      |L4.606|
-;;;327            {	
-;;;328                ucRefresh = 0;
+;;;339            {	
+;;;340                ucRefresh = 0;
 000170  2000              MOVS     r0,#0
 000172  493d              LDR      r1,|L4.616|
 000174  7008              STRB     r0,[r1,#0]
-;;;329                //计算幅值和编码器距离
-;;;330                for (int i = 0; i < 6; i++) 
+;;;341                //计算幅值和编码器距离
+;;;342                for (int i = 0; i < 6; i++) 
 000176  bf00              NOP      
 000178  e014              B        |L4.420|
                   |L4.378|
-;;;331                {
-;;;332                    chan[i] = g_tAD7606.sNowAdc[i]*5000/32768+200-ave[i];
+;;;343                {
+;;;344                    chan[i] = g_tAD7606.sNowAdc[i]*5000/32768+200-ave[i];
 00017a  4a3d              LDR      r2,|L4.624|
 00017c  f8322010          LDRH     r2,[r2,r0,LSL #1]
 000180  f2413388          MOV      r3,#0x1388
@@ -403,12 +403,12 @@
 00019a  b212              SXTH     r2,r2
 00019c  4b35              LDR      r3,|L4.628|
 00019e  f8232010          STRH     r2,[r3,r0,LSL #1]
-0001a2  1c40              ADDS     r0,r0,#1              ;330
+0001a2  1c40              ADDS     r0,r0,#1              ;342
                   |L4.420|
-0001a4  2806              CMP      r0,#6                 ;330
+0001a4  2806              CMP      r0,#6                 ;342
 0001a6  dbe8              BLT      |L4.378|
-;;;333                }
-;;;334                sum = chan[0]+chan[1]+chan[2]+chan[3]+chan[4]+chan[5]-600;
+;;;345                }
+;;;346                sum = chan[0]+chan[1]+chan[2]+chan[3]+chan[4]+chan[5]-600;
 0001a8  4832              LDR      r0,|L4.628|
 0001aa  8800              LDRH     r0,[r0,#0]  ; chan
 0001ac  4931              LDR      r1,|L4.628|
@@ -430,75 +430,75 @@
 0001ce  b200              SXTH     r0,r0
 0001d0  4934              LDR      r1,|L4.676|
 0001d2  8008              STRH     r0,[r1,#0]
-;;;335                //发送曲线
-;;;336                comSendChar(COM1, 0x5A);
+;;;347                //发送曲线
+;;;348                comSendChar(COM1, 0x5A);
 0001d4  215a              MOVS     r1,#0x5a
 0001d6  2000              MOVS     r0,#0
 0001d8  f7fffffe          BL       comSendChar
-;;;337                comSendChar(COM1, 0xA5);
+;;;349                comSendChar(COM1, 0xA5);
 0001dc  21a5              MOVS     r1,#0xa5
 0001de  2000              MOVS     r0,#0
 0001e0  f7fffffe          BL       comSendChar
-;;;338                comSendChar(COM1, 0x10);
+;;;350                comSendChar(COM1, 0x10);
 0001e4  2110              MOVS     r1,#0x10
 0001e6  2000              MOVS     r0,#0
 0001e8  f7fffffe          BL       comSendChar
-;;;339                comSendChar(COM1, 0x84);
+;;;351                comSendChar(COM1, 0x84);
 0001ec  2184              MOVS     r1,#0x84
 0001ee  2000              MOVS     r0,#0
 0001f0  f7fffffe          BL       comSendChar
-;;;340                comSendChar(COM1, 0x7F);
+;;;352                comSendChar(COM1, 0x7F);
 0001f4  217f              MOVS     r1,#0x7f
 0001f6  2000              MOVS     r0,#0
 0001f8  f7fffffe          BL       comSendChar
-;;;341                comSendHalfword(COM1,sum);
+;;;353                comSendHalfword(COM1,sum);
 0001fc  4829              LDR      r0,|L4.676|
 0001fe  8800              LDRH     r0,[r0,#0]  ; sum
 000200  b281              UXTH     r1,r0
 000202  2000              MOVS     r0,#0
 000204  f7fffffe          BL       comSendHalfword
-;;;342                for (int i = 0; i < 6; i++)
+;;;354                for (int i = 0; i < 6; i++)
 000208  2400              MOVS     r4,#0
 00020a  e007              B        |L4.540|
                   |L4.524|
-;;;343                {
-;;;344                    comSendHalfword(COM1,chan[i]);
+;;;355                {
+;;;356                    comSendHalfword(COM1,chan[i]);
 00020c  4819              LDR      r0,|L4.628|
 00020e  f8300014          LDRH     r0,[r0,r4,LSL #1]
 000212  b281              UXTH     r1,r0
 000214  2000              MOVS     r0,#0
 000216  f7fffffe          BL       comSendHalfword
-00021a  1c64              ADDS     r4,r4,#1              ;342
+00021a  1c64              ADDS     r4,r4,#1              ;354
                   |L4.540|
-00021c  2c06              CMP      r4,#6                 ;342
+00021c  2c06              CMP      r4,#6                 ;354
 00021e  dbf5              BLT      |L4.524|
-;;;345                }	
-;;;346                //发送位置
-;;;347                comSendChar(COM1, 0x5A);
+;;;357                }	
+;;;358                //发送位置
+;;;359                comSendChar(COM1, 0x5A);
 000220  215a              MOVS     r1,#0x5a
 000222  2000              MOVS     r0,#0
 000224  f7fffffe          BL       comSendChar
-;;;348                comSendChar(COM1, 0xA5);
+;;;360                comSendChar(COM1, 0xA5);
 000228  21a5              MOVS     r1,#0xa5
 00022a  2000              MOVS     r0,#0
 00022c  f7fffffe          BL       comSendChar
-;;;349                comSendChar(COM1, 0x07);
+;;;361                comSendChar(COM1, 0x07);
 000230  2107              MOVS     r1,#7
 000232  2000              MOVS     r0,#0
 000234  f7fffffe          BL       comSendChar
-;;;350                comSendChar(COM1, 0x82);
+;;;362                comSendChar(COM1, 0x82);
 000238  2182              MOVS     r1,#0x82
 00023a  2000              MOVS     r0,#0
 00023c  f7fffffe          BL       comSendChar
-;;;351                comSendChar(COM1, 0x00);
+;;;363                comSendChar(COM1, 0x00);
 000240  2100              MOVS     r1,#0
 000242  4608              MOV      r0,r1
 000244  f7fffffe          BL       comSendChar
-;;;352                comSendChar(COM1, 0x00);
+;;;364                comSendChar(COM1, 0x00);
 000248  2100              MOVS     r1,#0
 00024a  4608              MOV      r0,r1
 00024c  f7fffffe          BL       comSendChar
-;;;353                comSendword(COM1,len);
+;;;365                comSendword(COM1,len);
 000250  4815              LDR      r0,|L4.680|
 000252  6801              LDR      r1,[r0,#0]  ; len
 000254  2000              MOVS     r0,#0
@@ -508,11 +508,11 @@
                   |L4.602|
 00025a  f7fffffe          BL       comSendword
                   |L4.606|
-;;;354            }					
-;;;355    	}
-;;;356    }    
+;;;366            }					
+;;;367    	}
+;;;368    }    
 00025e  bd10              POP      {r4,pc}
-;;;357    
+;;;369    
                           ENDP
 
                   |L4.608|
@@ -562,68 +562,68 @@
                           REQUIRE _printf_d
                           REQUIRE _printf_int_dec
                   HandleDateEncoder PROC
-;;;145    
-;;;146    void HandleDateEncoder(void)
+;;;148    
+;;;149    void HandleDateEncoder(void)
 000000  b510              PUSH     {r4,lr}
-;;;147    {
-;;;148        //执行停止按钮
-;;;149        if (ucFifoMode == 3)	
-000002  48b5              LDR      r0,|L5.728|
+;;;150    {
+;;;151        //执行停止按钮
+;;;152        if (ucFifoMode == 3)	
+000002  48c0              LDR      r0,|L5.772|
 000004  7800              LDRB     r0,[r0,#0]  ; ucFifoMode
 000006  2803              CMP      r0,#3
 000008  d107              BNE      |L5.26|
-;;;150        {
-;;;151            bsp_StopTimer(1);
+;;;153        {
+;;;154            bsp_StopTimer(1);
 00000a  2001              MOVS     r0,#1
 00000c  f7fffffe          BL       bsp_StopTimer
-;;;152            AD7606_StopRecord();
+;;;155            AD7606_StopRecord();
 000010  f7fffffe          BL       AD7606_StopRecord
-;;;153            f_close(&file);
-000014  48b1              LDR      r0,|L5.732|
+;;;156            f_close(&file);
+000014  48bc              LDR      r0,|L5.776|
 000016  f7fffffe          BL       f_close
                   |L5.26|
-;;;154        }	
-;;;155        //执行运行按钮
-;;;156        if (ucFifoMode == 1)/* 计算500个数的均值 */
-00001a  48af              LDR      r0,|L5.728|
+;;;157        }	
+;;;158        //执行运行按钮
+;;;159        if (ucFifoMode == 1)/* 计算500个数的均值 */
+00001a  48ba              LDR      r0,|L5.772|
 00001c  7800              LDRB     r0,[r0,#0]  ; ucFifoMode
 00001e  2801              CMP      r0,#1
                   |L5.32|
-000020  d17e              BNE      |L5.288|
-;;;157        {
-;;;158            if (bsp_CheckTimer(0))
+000020  d17d              BNE      |L5.286|
+;;;160        {
+;;;161            if (bsp_CheckTimer(0))
 000022  2000              MOVS     r0,#0
 000024  f7fffffe          BL       bsp_CheckTimer
 000028  b130              CBZ      r0,|L5.56|
-;;;159            {
-;;;160                /* 每隔xms 进来一次. 由软件启动转换 */
-;;;161                AD7606_ReadNowAdc();		/* 读取采样结果 */
+;;;162            {
+;;;163                /* 每隔xms 进来一次. 由软件启动转换 */
+;;;164                AD7606_ReadNowAdc();		/* 读取采样结果 */
 00002a  f7fffffe          BL       AD7606_ReadNowAdc
-;;;162                AD7606_StartConvst();		/* 启动下次转换 */
+;;;165                AD7606_StartConvst();		/* 启动下次转换 */
 00002e  f7fffffe          BL       AD7606_StartConvst
-;;;163                ucRefresh = 1;	/* 刷新显示 */
+;;;166                ucRefresh = 1;	/* 刷新显示 */
 000032  2001              MOVS     r0,#1
-000034  49aa              LDR      r1,|L5.736|
+000034  49b5              LDR      r1,|L5.780|
 000036  7008              STRB     r0,[r1,#0]
                   |L5.56|
-;;;164            }			
-;;;165            if (ucRefresh == 1)
-000038  48a9              LDR      r0,|L5.736|
+;;;167            }			
+;;;168            if (ucRefresh == 1)
+000038  48b4              LDR      r0,|L5.780|
 00003a  7800              LDRB     r0,[r0,#0]  ; ucRefresh
 00003c  2801              CMP      r0,#1
 00003e  d1ef              BNE      |L5.32|
-;;;166            {	
-;;;167                ucRefresh = 0;
+;;;169            {	
+;;;170                ucRefresh = 0;
 000040  2000              MOVS     r0,#0
-000042  49a7              LDR      r1,|L5.736|
+000042  49b2              LDR      r1,|L5.780|
 000044  7008              STRB     r0,[r1,#0]
-;;;168                reset++;
-000046  48a7              LDR      r0,|L5.740|
+;;;171                reset++;
+000046  48b2              LDR      r0,|L5.784|
 000048  8800              LDRH     r0,[r0,#0]  ; reset
 00004a  1c40              ADDS     r0,r0,#1
-00004c  49a5              LDR      r1,|L5.740|
+00004c  49b0              LDR      r1,|L5.784|
 00004e  8008              STRH     r0,[r1,#0]
-;;;169                if(reset>100&&reset<=600)
+;;;172                if(reset>100&&reset<=600)
 000050  4608              MOV      r0,r1
 000052  8800              LDRH     r0,[r0,#0]  ; reset
 000054  2864              CMP      r0,#0x64
@@ -632,464 +632,503 @@
 00005a  8800              LDRH     r0,[r0,#0]  ; reset
 00005c  f5b07f16          CMP      r0,#0x258
 000060  dc21              BGT      |L5.166|
-;;;170                {
-;;;171                    //计算幅值和编码器距离
-;;;172                    for(int i = 0; i < 6; i++)
+;;;173                {
+;;;174                    //计算幅值和编码器距离
+;;;175                    for(int i = 0; i < 6; i++)
 000062  2000              MOVS     r0,#0
 000064  e00e              B        |L5.132|
                   |L5.102|
-;;;173                    {
-;;;174                        chan[i] = g_tAD7606.sNowAdc[i]*5000/32768;
-000066  4aa0              LDR      r2,|L5.744|
+;;;176                    {
+;;;177                        chan[i] = g_tAD7606.sNowAdc[i]*5000/32768;
+000066  4aab              LDR      r2,|L5.788|
 000068  f8322010          LDRH     r2,[r2,r0,LSL #1]
 00006c  f2413388          MOV      r3,#0x1388
 000070  fb12f103          SMULBB   r1,r2,r3
 000074  17ca              ASRS     r2,r1,#31
 000076  eb014252          ADD      r2,r1,r2,LSR #17
 00007a  13d2              ASRS     r2,r2,#15
-00007c  4b9b              LDR      r3,|L5.748|
+00007c  4ba6              LDR      r3,|L5.792|
 00007e  f8232010          STRH     r2,[r3,r0,LSL #1]
-000082  1c40              ADDS     r0,r0,#1              ;172
+000082  1c40              ADDS     r0,r0,#1              ;175
                   |L5.132|
-000084  2806              CMP      r0,#6                 ;172
+000084  2806              CMP      r0,#6                 ;175
 000086  dbee              BLT      |L5.102|
-;;;175                    }
-;;;176                    
-;;;177                    for (int i = 0; i < 6; i++) 
+;;;178                    }
+;;;179                    
+;;;180                    for (int i = 0; i < 6; i++) 
 000088  2000              MOVS     r0,#0
 00008a  e00a              B        |L5.162|
                   |L5.140|
-;;;178                    {
-;;;179                        add[i] += chan[i];
-00008c  4998              LDR      r1,|L5.752|
+;;;181                    {
+;;;182                        add[i] += chan[i];
+00008c  49a3              LDR      r1,|L5.796|
 00008e  f8511020          LDR      r1,[r1,r0,LSL #2]
-000092  4a96              LDR      r2,|L5.748|
+000092  4aa1              LDR      r2,|L5.792|
 000094  f9322010          LDRSH    r2,[r2,r0,LSL #1]
 000098  4411              ADD      r1,r1,r2
-00009a  4a95              LDR      r2,|L5.752|
+00009a  4aa0              LDR      r2,|L5.796|
 00009c  f8421020          STR      r1,[r2,r0,LSL #2]
-0000a0  1c40              ADDS     r0,r0,#1              ;177
+0000a0  1c40              ADDS     r0,r0,#1              ;180
                   |L5.162|
-0000a2  2806              CMP      r0,#6                 ;177
+0000a2  2806              CMP      r0,#6                 ;180
 0000a4  dbf2              BLT      |L5.140|
                   |L5.166|
-;;;180                    }
-;;;181                }									
-;;;182                if(reset==600)
-0000a6  488f              LDR      r0,|L5.740|
+;;;183                    }
+;;;184                }									
+;;;185                if(reset==600)
+0000a6  489a              LDR      r0,|L5.784|
 0000a8  8800              LDRH     r0,[r0,#0]  ; reset
 0000aa  f5b07f16          CMP      r0,#0x258
-0000ae  d148              BNE      |L5.322|
-;;;183                {
-;;;184                    reset=0;
+0000ae  d15e              BNE      |L5.366|
+;;;186                {
+;;;187                    reset=0;
 0000b0  2000              MOVS     r0,#0
-0000b2  498c              LDR      r1,|L5.740|
+0000b2  4997              LDR      r1,|L5.784|
 0000b4  8008              STRH     r0,[r1,#0]
-;;;185                    for(int i = 0; i < 6; i++) 
+;;;188                    for(int i = 0; i < 6; i++) 
 0000b6  bf00              NOP      
 0000b8  e00b              B        |L5.210|
                   |L5.186|
-;;;186                    {
-;;;187                        ave[i] = add[i]/500;
-0000ba  498d              LDR      r1,|L5.752|
+;;;189                    {
+;;;190                        ave[i] = add[i]/500;
+0000ba  4998              LDR      r1,|L5.796|
 0000bc  f8511020          LDR      r1,[r1,r0,LSL #2]
 0000c0  f44f72fa          MOV      r2,#0x1f4
 0000c4  fb91f1f2          SDIV     r1,r1,r2
 0000c8  b209              SXTH     r1,r1
-0000ca  4a8a              LDR      r2,|L5.756|
+0000ca  4a95              LDR      r2,|L5.800|
 0000cc  f8221010          STRH     r1,[r2,r0,LSL #1]
-0000d0  1c40              ADDS     r0,r0,#1              ;185
+0000d0  1c40              ADDS     r0,r0,#1              ;188
                   |L5.210|
-0000d2  2806              CMP      r0,#6                 ;185
+0000d2  2806              CMP      r0,#6                 ;188
 0000d4  dbf1              BLT      |L5.186|
-;;;188                    }
-;;;189                    ave[6] = ave[0]+ave[1]+ave[2]+ave[3]+ave[4]+ave[5];
-0000d6  4887              LDR      r0,|L5.756|
+;;;191                    }
+;;;192                    ave[6] = ave[0]+ave[1]+ave[2]+ave[3]+ave[4]+ave[5];
+0000d6  4892              LDR      r0,|L5.800|
 0000d8  8800              LDRH     r0,[r0,#0]  ; ave
-0000da  4986              LDR      r1,|L5.756|
+0000da  4991              LDR      r1,|L5.800|
 0000dc  8849              LDRH     r1,[r1,#2]  ; ave
 0000de  4408              ADD      r0,r0,r1
-0000e0  4984              LDR      r1,|L5.756|
+0000e0  498f              LDR      r1,|L5.800|
 0000e2  8889              LDRH     r1,[r1,#4]  ; ave
 0000e4  4408              ADD      r0,r0,r1
-0000e6  4983              LDR      r1,|L5.756|
+0000e6  498e              LDR      r1,|L5.800|
 0000e8  88c9              LDRH     r1,[r1,#6]  ; ave
 0000ea  4408              ADD      r0,r0,r1
-0000ec  4981              LDR      r1,|L5.756|
+0000ec  498c              LDR      r1,|L5.800|
 0000ee  8909              LDRH     r1,[r1,#8]  ; ave
 0000f0  4408              ADD      r0,r0,r1
-0000f2  4980              LDR      r1,|L5.756|
+0000f2  498b              LDR      r1,|L5.800|
 0000f4  8949              LDRH     r1,[r1,#0xa]  ; ave
 0000f6  4408              ADD      r0,r0,r1
 0000f8  b200              SXTH     r0,r0
-0000fa  497e              LDR      r1,|L5.756|
+0000fa  4989              LDR      r1,|L5.800|
 0000fc  8188              STRH     r0,[r1,#0xc]
-;;;190    
-;;;191                    bsp_StopTimer(0);
+;;;193    
+;;;194                    bsp_StopTimer(0);
 0000fe  2000              MOVS     r0,#0
 000100  f7fffffe          BL       bsp_StopTimer
-;;;192                    ucFifoMode = 2;	                                
+;;;195                    ucFifoMode = 2;	                                
 000104  2002              MOVS     r0,#2
-000106  4974              LDR      r1,|L5.728|
+000106  497f              LDR      r1,|L5.772|
 000108  7008              STRB     r0,[r1,#0]
-;;;193                    f_mount(FS_USB, &fs);
-00010a  497b              LDR      r1,|L5.760|
+;;;196                    f_mount(FS_USB, &fs);
+00010a  4986              LDR      r1,|L5.804|
 00010c  2000              MOVS     r0,#0
 00010e  f7fffffe          BL       f_mount
-;;;194                    f_opendir(&DirInf, "/");
-000112  a17a              ADR      r1,|L5.764|
-000114  487a              LDR      r0,|L5.768|
+;;;197                    f_opendir(&DirInf, "/");
+000112  a185              ADR      r1,|L5.808|
+000114  4885              LDR      r0,|L5.812|
 000116  f7fffffe          BL       f_opendir
-;;;195                    f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
-00011a  2212              MOVS     r2,#0x12
-00011c  a179              ADR      r1,|L5.772|
-00011e  e000              B        |L5.290|
+;;;198                    f_mkdir("0:/wirerope");
+00011a  a085              ADR      r0,|L5.816|
+00011c  e000              B        |L5.288|
+                  |L5.286|
+00011e  e026              B        |L5.366|
                   |L5.288|
-000120  e00f              B        |L5.322|
-                  |L5.290|
-000122  486e              LDR      r0,|L5.732|
-000124  f7fffffe          BL       f_open
-;;;196                    f_lseek(&file,f_size(&file));
-000128  486c              LDR      r0,|L5.732|
-00012a  68c1              LDR      r1,[r0,#0xc]  ; file
-00012c  f7fffffe          BL       f_lseek
-;;;197                    f_write(&file,  buffer, sizeof(buffer), &bw);
-000130  4b78              LDR      r3,|L5.788|
-000132  2230              MOVS     r2,#0x30
-000134  4978              LDR      r1,|L5.792|
-000136  4869              LDR      r0,|L5.732|
-000138  f7fffffe          BL       f_write
-;;;198                    f_sync(&file);                
-00013c  4867              LDR      r0,|L5.732|
-00013e  f7fffffe          BL       f_sync
-                  |L5.322|
-;;;199                }
-;;;200            }
-;;;201    
-;;;202    	}
-;;;203    	if (ucFifoMode == 2)	/* AD7606 普通工作模式 */
-000142  4865              LDR      r0,|L5.728|
-000144  7800              LDRB     r0,[r0,#0]  ; ucFifoMode
-000146  2802              CMP      r0,#2
-                  |L5.328|
-000148  d17c              BNE      |L5.580|
-;;;204    	{
-;;;205            if (flagEncoder == 1) 
-00014a  4874              LDR      r0,|L5.796|
-00014c  6800              LDR      r0,[r0,#0]  ; flagEncoder
-00014e  2801              CMP      r0,#1
-000150  d1fa              BNE      |L5.328|
-;;;206            {
-;;;207                flagEncoder = 0;
-000152  2000              MOVS     r0,#0
-000154  4971              LDR      r1,|L5.796|
-000156  6008              STR      r0,[r1,#0]  ; flagEncoder
-;;;208                AD7606_ReadNowAdc();		/* 读取采样结果 */
-000158  f7fffffe          BL       AD7606_ReadNowAdc
-;;;209                AD7606_StartConvst();		/* 启动下次转换 */
-00015c  f7fffffe          BL       AD7606_StartConvst
-;;;210                //计算幅值和编码器距离
-;;;211                for (int i = 0; i < 6; i++) 
-000160  2000              MOVS     r0,#0
-000162  e022              B        |L5.426|
-                  |L5.356|
-;;;212                {
-;;;213                    chan[i] = g_tAD7606.sNowAdc[i]*5000/32768 + 200 - ave[i];
-000164  4a60              LDR      r2,|L5.744|
-000166  f8322010          LDRH     r2,[r2,r0,LSL #1]
-00016a  f2413388          MOV      r3,#0x1388
-00016e  fb12f103          SMULBB   r1,r2,r3
-000172  17ca              ASRS     r2,r1,#31
-000174  eb014252          ADD      r2,r1,r2,LSR #17
-000178  13d2              ASRS     r2,r2,#15
-00017a  32c8              ADDS     r2,r2,#0xc8
-00017c  4b5d              LDR      r3,|L5.756|
-00017e  f8333010          LDRH     r3,[r3,r0,LSL #1]
-000182  1ad2              SUBS     r2,r2,r3
-000184  b212              SXTH     r2,r2
-000186  4b59              LDR      r3,|L5.748|
-000188  f8232010          STRH     r2,[r3,r0,LSL #1]
-;;;214                    channel[i] = g_tAD7606.sNowAdc[i]*5000/32768;
-00018c  4a56              LDR      r2,|L5.744|
-00018e  f8322010          LDRH     r2,[r2,r0,LSL #1]
-000192  f2413388          MOV      r3,#0x1388
-000196  fb12f103          SMULBB   r1,r2,r3
-00019a  17ca              ASRS     r2,r1,#31
-00019c  eb014252          ADD      r2,r1,r2,LSR #17
-0001a0  13d2              ASRS     r2,r2,#15
-0001a2  4b5f              LDR      r3,|L5.800|
-0001a4  f8232010          STRH     r2,[r3,r0,LSL #1]
-0001a8  1c40              ADDS     r0,r0,#1              ;211
-                  |L5.426|
-0001aa  2806              CMP      r0,#6                 ;211
-0001ac  dbda              BLT      |L5.356|
-;;;215                }
-;;;216                sum = chan[0]+chan[1]+chan[2]+chan[3]+chan[4]+chan[5]-600;
-0001ae  484f              LDR      r0,|L5.748|
-0001b0  8800              LDRH     r0,[r0,#0]  ; chan
-0001b2  494e              LDR      r1,|L5.748|
-0001b4  8849              LDRH     r1,[r1,#2]  ; chan
-0001b6  4408              ADD      r0,r0,r1
-0001b8  494c              LDR      r1,|L5.748|
-0001ba  8889              LDRH     r1,[r1,#4]  ; chan
-0001bc  4408              ADD      r0,r0,r1
-0001be  494b              LDR      r1,|L5.748|
-0001c0  88c9              LDRH     r1,[r1,#6]  ; chan
-0001c2  4408              ADD      r0,r0,r1
-0001c4  4949              LDR      r1,|L5.748|
-0001c6  8909              LDRH     r1,[r1,#8]  ; chan
-0001c8  4408              ADD      r0,r0,r1
-0001ca  4948              LDR      r1,|L5.748|
-0001cc  8949              LDRH     r1,[r1,#0xa]  ; chan
-0001ce  4408              ADD      r0,r0,r1
-0001d0  f5a07016          SUB      r0,r0,#0x258
-0001d4  b200              SXTH     r0,r0
-0001d6  4953              LDR      r1,|L5.804|
-0001d8  8008              STRH     r0,[r1,#0]
-;;;217                sumchannel = channel[0]+channel[1]+channel[2]+channel[3]+channel[4]+channel[5];
-0001da  4851              LDR      r0,|L5.800|
-0001dc  8800              LDRH     r0,[r0,#0]  ; channel
-0001de  4950              LDR      r1,|L5.800|
-0001e0  8849              LDRH     r1,[r1,#2]  ; channel
+000120  f7fffffe          BL       f_mkdir
+;;;199                    
+;;;200                    do
+000124  bf00              NOP      
+                  |L5.294|
+;;;201                    {
+;;;202                        sprintf((char*)fileName,"0:wirerope/data_%d.csv",fileCount++);
+000126  4885              LDR      r0,|L5.828|
+000128  f9b02000          LDRSH    r2,[r0,#0]  ; fileCount
+00012c  8800              LDRH     r0,[r0,#0]  ; fileCount
+00012e  1c40              ADDS     r0,r0,#1
+000130  b200              SXTH     r0,r0
+000132  4b82              LDR      r3,|L5.828|
+000134  8018              STRH     r0,[r3,#0]
+000136  a182              ADR      r1,|L5.832|
+000138  4887              LDR      r0,|L5.856|
+00013a  f7fffffe          BL       __2sprintf
+;;;203                        fileFlag =  f_open(&file, (char*)fileName, FA_CREATE_NEW | FA_WRITE);
+00013e  2206              MOVS     r2,#6
+000140  4985              LDR      r1,|L5.856|
+000142  4871              LDR      r0,|L5.776|
+000144  f7fffffe          BL       f_open
+000148  4984              LDR      r1,|L5.860|
+00014a  8008              STRH     r0,[r1,#0]
+;;;204                        
+;;;205                    }while(fileFlag != FR_OK);               
+00014c  4608              MOV      r0,r1
+00014e  8800              LDRH     r0,[r0,#0]  ; fileFlag
+000150  2800              CMP      r0,#0
+000152  d1e8              BNE      |L5.294|
+;;;206                    
+;;;207                    //f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
+;;;208                    f_lseek(&file,f_size(&file));
+000154  486c              LDR      r0,|L5.776|
+000156  68c1              LDR      r1,[r0,#0xc]  ; file
+000158  f7fffffe          BL       f_lseek
+;;;209                    f_write(&file,  buffer, sizeof(buffer), &bw);
+00015c  4b80              LDR      r3,|L5.864|
+00015e  2230              MOVS     r2,#0x30
+000160  4980              LDR      r1,|L5.868|
+000162  4869              LDR      r0,|L5.776|
+000164  f7fffffe          BL       f_write
+;;;210                    f_sync(&file);                
+000168  4867              LDR      r0,|L5.776|
+00016a  f7fffffe          BL       f_sync
+                  |L5.366|
+;;;211                }
+;;;212            }
+;;;213    
+;;;214    	}
+;;;215    	if (ucFifoMode == 2)	/* AD7606 普通工作模式 */
+00016e  4865              LDR      r0,|L5.772|
+000170  7800              LDRB     r0,[r0,#0]  ; ucFifoMode
+000172  2802              CMP      r0,#2
+                  |L5.372|
+000174  d17c              BNE      |L5.624|
+;;;216    	{
+;;;217            if (flagEncoder == 1) 
+000176  487c              LDR      r0,|L5.872|
+000178  6800              LDR      r0,[r0,#0]  ; flagEncoder
+00017a  2801              CMP      r0,#1
+00017c  d1fa              BNE      |L5.372|
+;;;218            {
+;;;219                flagEncoder = 0;
+00017e  2000              MOVS     r0,#0
+000180  4979              LDR      r1,|L5.872|
+000182  6008              STR      r0,[r1,#0]  ; flagEncoder
+;;;220                AD7606_ReadNowAdc();		/* 读取采样结果 */
+000184  f7fffffe          BL       AD7606_ReadNowAdc
+;;;221                AD7606_StartConvst();		/* 启动下次转换 */
+000188  f7fffffe          BL       AD7606_StartConvst
+;;;222                //计算幅值和编码器距离
+;;;223                for (int i = 0; i < 6; i++) 
+00018c  2000              MOVS     r0,#0
+00018e  e022              B        |L5.470|
+                  |L5.400|
+;;;224                {
+;;;225                    chan[i] = g_tAD7606.sNowAdc[i]*5000/32768 + 200 - ave[i];
+000190  4a60              LDR      r2,|L5.788|
+000192  f8322010          LDRH     r2,[r2,r0,LSL #1]
+000196  f2413388          MOV      r3,#0x1388
+00019a  fb12f103          SMULBB   r1,r2,r3
+00019e  17ca              ASRS     r2,r1,#31
+0001a0  eb014252          ADD      r2,r1,r2,LSR #17
+0001a4  13d2              ASRS     r2,r2,#15
+0001a6  32c8              ADDS     r2,r2,#0xc8
+0001a8  4b5d              LDR      r3,|L5.800|
+0001aa  f8333010          LDRH     r3,[r3,r0,LSL #1]
+0001ae  1ad2              SUBS     r2,r2,r3
+0001b0  b212              SXTH     r2,r2
+0001b2  4b59              LDR      r3,|L5.792|
+0001b4  f8232010          STRH     r2,[r3,r0,LSL #1]
+;;;226                    channel[i] = g_tAD7606.sNowAdc[i]*5000/32768;
+0001b8  4a56              LDR      r2,|L5.788|
+0001ba  f8322010          LDRH     r2,[r2,r0,LSL #1]
+0001be  f2413388          MOV      r3,#0x1388
+0001c2  fb12f103          SMULBB   r1,r2,r3
+0001c6  17ca              ASRS     r2,r1,#31
+0001c8  eb014252          ADD      r2,r1,r2,LSR #17
+0001cc  13d2              ASRS     r2,r2,#15
+0001ce  4b67              LDR      r3,|L5.876|
+0001d0  f8232010          STRH     r2,[r3,r0,LSL #1]
+0001d4  1c40              ADDS     r0,r0,#1              ;223
+                  |L5.470|
+0001d6  2806              CMP      r0,#6                 ;223
+0001d8  dbda              BLT      |L5.400|
+;;;227                }
+;;;228                sum = chan[0]+chan[1]+chan[2]+chan[3]+chan[4]+chan[5]-600;
+0001da  484f              LDR      r0,|L5.792|
+0001dc  8800              LDRH     r0,[r0,#0]  ; chan
+0001de  494e              LDR      r1,|L5.792|
+0001e0  8849              LDRH     r1,[r1,#2]  ; chan
 0001e2  4408              ADD      r0,r0,r1
-0001e4  494e              LDR      r1,|L5.800|
-0001e6  8889              LDRH     r1,[r1,#4]  ; channel
+0001e4  494c              LDR      r1,|L5.792|
+0001e6  8889              LDRH     r1,[r1,#4]  ; chan
 0001e8  4408              ADD      r0,r0,r1
-0001ea  494d              LDR      r1,|L5.800|
-0001ec  88c9              LDRH     r1,[r1,#6]  ; channel
+0001ea  494b              LDR      r1,|L5.792|
+0001ec  88c9              LDRH     r1,[r1,#6]  ; chan
 0001ee  4408              ADD      r0,r0,r1
-0001f0  494b              LDR      r1,|L5.800|
-0001f2  8909              LDRH     r1,[r1,#8]  ; channel
+0001f0  4949              LDR      r1,|L5.792|
+0001f2  8909              LDRH     r1,[r1,#8]  ; chan
 0001f4  4408              ADD      r0,r0,r1
-0001f6  494a              LDR      r1,|L5.800|
-0001f8  8949              LDRH     r1,[r1,#0xa]  ; channel
+0001f6  4948              LDR      r1,|L5.792|
+0001f8  8949              LDRH     r1,[r1,#0xa]  ; chan
 0001fa  4408              ADD      r0,r0,r1
-0001fc  b200              SXTH     r0,r0
-0001fe  494a              LDR      r1,|L5.808|
-000200  8008              STRH     r0,[r1,#0]
-;;;218                len++;
-000202  484a              LDR      r0,|L5.812|
-000204  6800              LDR      r0,[r0,#0]  ; len
-000206  1c40              ADDS     r0,r0,#1
-000208  4948              LDR      r1,|L5.812|
-00020a  6008              STR      r0,[r1,#0]  ; len
-;;;219                //发送曲线
-;;;220                comSendChar(COM1, 0x5A);
-00020c  215a              MOVS     r1,#0x5a
-00020e  2000              MOVS     r0,#0
-000210  f7fffffe          BL       comSendChar
-;;;221                comSendChar(COM1, 0xA5);
-000214  21a5              MOVS     r1,#0xa5
-000216  2000              MOVS     r0,#0
-000218  f7fffffe          BL       comSendChar
-;;;222                comSendChar(COM1, 0x10);
-00021c  2110              MOVS     r1,#0x10
-00021e  2000              MOVS     r0,#0
-000220  f7fffffe          BL       comSendChar
-;;;223                comSendChar(COM1, 0x84);
-000224  2184              MOVS     r1,#0x84
-000226  2000              MOVS     r0,#0
-000228  f7fffffe          BL       comSendChar
-;;;224                comSendChar(COM1, 0x7F);
-00022c  217f              MOVS     r1,#0x7f
-00022e  2000              MOVS     r0,#0
-000230  f7fffffe          BL       comSendChar
-;;;225                comSendHalfword(COM1,sum);
-000234  483b              LDR      r0,|L5.804|
-000236  8800              LDRH     r0,[r0,#0]  ; sum
-000238  b281              UXTH     r1,r0
+0001fc  f5a07016          SUB      r0,r0,#0x258
+000200  b200              SXTH     r0,r0
+000202  495b              LDR      r1,|L5.880|
+000204  8008              STRH     r0,[r1,#0]
+;;;229                sumchannel = channel[0]+channel[1]+channel[2]+channel[3]+channel[4]+channel[5];
+000206  4859              LDR      r0,|L5.876|
+000208  8800              LDRH     r0,[r0,#0]  ; channel
+00020a  4958              LDR      r1,|L5.876|
+00020c  8849              LDRH     r1,[r1,#2]  ; channel
+00020e  4408              ADD      r0,r0,r1
+000210  4956              LDR      r1,|L5.876|
+000212  8889              LDRH     r1,[r1,#4]  ; channel
+000214  4408              ADD      r0,r0,r1
+000216  4955              LDR      r1,|L5.876|
+000218  88c9              LDRH     r1,[r1,#6]  ; channel
+00021a  4408              ADD      r0,r0,r1
+00021c  4953              LDR      r1,|L5.876|
+00021e  8909              LDRH     r1,[r1,#8]  ; channel
+000220  4408              ADD      r0,r0,r1
+000222  4952              LDR      r1,|L5.876|
+000224  8949              LDRH     r1,[r1,#0xa]  ; channel
+000226  4408              ADD      r0,r0,r1
+000228  b200              SXTH     r0,r0
+00022a  4952              LDR      r1,|L5.884|
+00022c  8008              STRH     r0,[r1,#0]
+;;;230                len++;
+00022e  4852              LDR      r0,|L5.888|
+000230  6800              LDR      r0,[r0,#0]  ; len
+000232  1c40              ADDS     r0,r0,#1
+000234  4950              LDR      r1,|L5.888|
+000236  6008              STR      r0,[r1,#0]  ; len
+;;;231                //发送曲线
+;;;232                comSendChar(COM1, 0x5A);
+000238  215a              MOVS     r1,#0x5a
 00023a  2000              MOVS     r0,#0
-00023c  f7fffffe          BL       comSendHalfword
-;;;226                for (int i = 0; i < 6; i++)
-000240  2400              MOVS     r4,#0
-000242  e008              B        |L5.598|
-                  |L5.580|
-000244  e046              B        |L5.724|
-                  |L5.582|
-;;;227                {
-;;;228                    comSendHalfword(COM1,chan[i]);
-000246  4829              LDR      r0,|L5.748|
-000248  f8300014          LDRH     r0,[r0,r4,LSL #1]
-00024c  b281              UXTH     r1,r0
-00024e  2000              MOVS     r0,#0
-000250  f7fffffe          BL       comSendHalfword
-000254  1c64              ADDS     r4,r4,#1              ;226
-                  |L5.598|
-000256  2c06              CMP      r4,#6                 ;226
-000258  dbf5              BLT      |L5.582|
-;;;229                }            
-;;;230                 //发送位置
-;;;231                comSendChar(COM1, 0x5A);
-00025a  215a              MOVS     r1,#0x5a
-00025c  2000              MOVS     r0,#0
-00025e  f7fffffe          BL       comSendChar
-;;;232                comSendChar(COM1, 0xA5);
-000262  21a5              MOVS     r1,#0xa5
-000264  2000              MOVS     r0,#0
-000266  f7fffffe          BL       comSendChar
-;;;233                comSendChar(COM1, 0x07);
-00026a  2107              MOVS     r1,#7
-00026c  2000              MOVS     r0,#0
-00026e  f7fffffe          BL       comSendChar
-;;;234                comSendChar(COM1, 0x82);
-000272  2182              MOVS     r1,#0x82
-000274  2000              MOVS     r0,#0
-000276  f7fffffe          BL       comSendChar
-;;;235                comSendChar(COM1, 0x00);
-00027a  2100              MOVS     r1,#0
-00027c  4608              MOV      r0,r1
-00027e  f7fffffe          BL       comSendChar
-;;;236                comSendChar(COM1, 0x00);
-000282  2100              MOVS     r1,#0
-000284  4608              MOV      r0,r1
-000286  f7fffffe          BL       comSendChar
-;;;237                comSendword(COM1,len);
-00028a  4828              LDR      r0,|L5.812|
-00028c  6801              LDR      r1,[r0,#0]  ; len
-00028e  2000              MOVS     r0,#0
-000290  f7fffffe          BL       comSendword
-;;;238                
-;;;239                //保存数据
-;;;240                //打印成字符串类型
-;;;241                sprintf(bufferSaveLen, " %d" , len);
-000294  4825              LDR      r0,|L5.812|
-000296  a126              ADR      r1,|L5.816|
-000298  6802              LDR      r2,[r0,#0]  ; len
-00029a  4826              LDR      r0,|L5.820|
-00029c  f7fffffe          BL       __2sprintf
-;;;242                for(int i = 0; i < 6; i++)
-0002a0  2400              MOVS     r4,#0
-0002a2  e00a              B        |L5.698|
-                  |L5.676|
-;;;243                {
-;;;244                   sprintf(bufferSaveChannel[i], " %d" , channel[i]); 
-0002a4  491e              LDR      r1,|L5.800|
-0002a6  f9312014          LDRSH    r2,[r1,r4,LSL #1]
-0002aa  eb040184          ADD      r1,r4,r4,LSL #2
-0002ae  4b22              LDR      r3,|L5.824|
-0002b0  18c8              ADDS     r0,r1,r3
-0002b2  a11f              ADR      r1,|L5.816|
-0002b4  f7fffffe          BL       __2sprintf
-0002b8  1c64              ADDS     r4,r4,#1              ;242
-                  |L5.698|
-0002ba  2c06              CMP      r4,#6                 ;242
-0002bc  dbf2              BLT      |L5.676|
-;;;245                }
-;;;246                sprintf(bufferSaveSum, " %d" , sumchannel);  
-0002be  481a              LDR      r0,|L5.808|
-0002c0  f9b02000          LDRSH    r2,[r0,#0]  ; sumchannel
-0002c4  a11a              ADR      r1,|L5.816|
-0002c6  481d              LDR      r0,|L5.828|
-0002c8  f7fffffe          BL       __2sprintf
-;;;247                
-;;;248                SaveBuffer();
-0002cc  f7fffffe          BL       SaveBuffer
-;;;249                SaveFile();
-0002d0  f7fffffe          BL       SaveFile
-                  |L5.724|
+00023c  f7fffffe          BL       comSendChar
+;;;233                comSendChar(COM1, 0xA5);
+000240  21a5              MOVS     r1,#0xa5
+000242  2000              MOVS     r0,#0
+000244  f7fffffe          BL       comSendChar
+;;;234                comSendChar(COM1, 0x10);
+000248  2110              MOVS     r1,#0x10
+00024a  2000              MOVS     r0,#0
+00024c  f7fffffe          BL       comSendChar
+;;;235                comSendChar(COM1, 0x84);
+000250  2184              MOVS     r1,#0x84
+000252  2000              MOVS     r0,#0
+000254  f7fffffe          BL       comSendChar
+;;;236                comSendChar(COM1, 0x7F);
+000258  217f              MOVS     r1,#0x7f
+00025a  2000              MOVS     r0,#0
+00025c  f7fffffe          BL       comSendChar
+;;;237                comSendHalfword(COM1,sum);
+000260  4843              LDR      r0,|L5.880|
+000262  8800              LDRH     r0,[r0,#0]  ; sum
+000264  b281              UXTH     r1,r0
+000266  2000              MOVS     r0,#0
+000268  f7fffffe          BL       comSendHalfword
+;;;238                for (int i = 0; i < 6; i++)
+00026c  2400              MOVS     r4,#0
+00026e  e008              B        |L5.642|
+                  |L5.624|
+000270  e046              B        |L5.768|
+                  |L5.626|
+;;;239                {
+;;;240                    comSendHalfword(COM1,chan[i]);
+000272  4829              LDR      r0,|L5.792|
+000274  f8300014          LDRH     r0,[r0,r4,LSL #1]
+000278  b281              UXTH     r1,r0
+00027a  2000              MOVS     r0,#0
+00027c  f7fffffe          BL       comSendHalfword
+000280  1c64              ADDS     r4,r4,#1              ;238
+                  |L5.642|
+000282  2c06              CMP      r4,#6                 ;238
+000284  dbf5              BLT      |L5.626|
+;;;241                }            
+;;;242                 //发送位置
+;;;243                comSendChar(COM1, 0x5A);
+000286  215a              MOVS     r1,#0x5a
+000288  2000              MOVS     r0,#0
+00028a  f7fffffe          BL       comSendChar
+;;;244                comSendChar(COM1, 0xA5);
+00028e  21a5              MOVS     r1,#0xa5
+000290  2000              MOVS     r0,#0
+000292  f7fffffe          BL       comSendChar
+;;;245                comSendChar(COM1, 0x07);
+000296  2107              MOVS     r1,#7
+000298  2000              MOVS     r0,#0
+00029a  f7fffffe          BL       comSendChar
+;;;246                comSendChar(COM1, 0x82);
+00029e  2182              MOVS     r1,#0x82
+0002a0  2000              MOVS     r0,#0
+0002a2  f7fffffe          BL       comSendChar
+;;;247                comSendChar(COM1, 0x00);
+0002a6  2100              MOVS     r1,#0
+0002a8  4608              MOV      r0,r1
+0002aa  f7fffffe          BL       comSendChar
+;;;248                comSendChar(COM1, 0x00);
+0002ae  2100              MOVS     r1,#0
+0002b0  4608              MOV      r0,r1
+0002b2  f7fffffe          BL       comSendChar
+;;;249                comSendword(COM1,len);
+0002b6  4830              LDR      r0,|L5.888|
+0002b8  6801              LDR      r1,[r0,#0]  ; len
+0002ba  2000              MOVS     r0,#0
+0002bc  f7fffffe          BL       comSendword
 ;;;250                
-;;;251    
-;;;252            }
-;;;253         					
-;;;254    	}
-;;;255    }
-0002d4  bd10              POP      {r4,pc}
-;;;256    
+;;;251                //保存数据
+;;;252                //打印成字符串类型
+;;;253                sprintf(bufferSaveLen, " %d" , len);
+0002c0  482d              LDR      r0,|L5.888|
+0002c2  a12e              ADR      r1,|L5.892|
+0002c4  6802              LDR      r2,[r0,#0]  ; len
+0002c6  482e              LDR      r0,|L5.896|
+0002c8  f7fffffe          BL       __2sprintf
+;;;254                for(int i = 0; i < 6; i++)
+0002cc  2400              MOVS     r4,#0
+0002ce  e00a              B        |L5.742|
+                  |L5.720|
+;;;255                {
+;;;256                   sprintf(bufferSaveChannel[i], " %d" , channel[i]); 
+0002d0  4926              LDR      r1,|L5.876|
+0002d2  f9312014          LDRSH    r2,[r1,r4,LSL #1]
+0002d6  eb040184          ADD      r1,r4,r4,LSL #2
+0002da  4b2a              LDR      r3,|L5.900|
+0002dc  18c8              ADDS     r0,r1,r3
+0002de  a127              ADR      r1,|L5.892|
+0002e0  f7fffffe          BL       __2sprintf
+0002e4  1c64              ADDS     r4,r4,#1              ;254
+                  |L5.742|
+0002e6  2c06              CMP      r4,#6                 ;254
+0002e8  dbf2              BLT      |L5.720|
+;;;257                }
+;;;258                sprintf(bufferSaveSum, " %d" , sumchannel);  
+0002ea  4822              LDR      r0,|L5.884|
+0002ec  f9b02000          LDRSH    r2,[r0,#0]  ; sumchannel
+0002f0  a122              ADR      r1,|L5.892|
+0002f2  4825              LDR      r0,|L5.904|
+0002f4  f7fffffe          BL       __2sprintf
+;;;259                
+;;;260                SaveBuffer();
+0002f8  f7fffffe          BL       SaveBuffer
+;;;261                SaveFile();
+0002fc  f7fffffe          BL       SaveFile
+                  |L5.768|
+;;;262                
+;;;263    
+;;;264            }
+;;;265         					
+;;;266    	}
+;;;267    }
+000300  bd10              POP      {r4,pc}
+;;;268    
                           ENDP
 
-0002d6  0000              DCW      0x0000
-                  |L5.728|
-                          DCD      ucFifoMode
-                  |L5.732|
-                          DCD      file
-                  |L5.736|
-                          DCD      ucRefresh
-                  |L5.740|
-                          DCD      reset
-                  |L5.744|
-                          DCD      g_tAD7606+0x2
-                  |L5.748|
-                          DCD      chan
-                  |L5.752|
-                          DCD      add
-                  |L5.756|
-                          DCD      ave
-                  |L5.760|
-                          DCD      ||fs||
-                  |L5.764|
-0002fc  2f00              DCB      "/",0
-0002fe  00                DCB      0
-0002ff  00                DCB      0
-                  |L5.768|
-                          DCD      DirInf
+000302  0000              DCW      0x0000
                   |L5.772|
-000304  b2c9bcaf          DCB      178,201,188,175,202,253,190,221,".csv",0
-000308  cafdbedd
-00030c  2e637376
-000310  00      
-000311  00                DCB      0
-000312  00                DCB      0
-000313  00                DCB      0
+                          DCD      ucFifoMode
+                  |L5.776|
+                          DCD      file
+                  |L5.780|
+                          DCD      ucRefresh
+                  |L5.784|
+                          DCD      reset
                   |L5.788|
-                          DCD      ||bw||
+                          DCD      g_tAD7606+0x2
                   |L5.792|
-                          DCD      buffer
+                          DCD      chan
                   |L5.796|
-                          DCD      flagEncoder
+                          DCD      add
                   |L5.800|
-                          DCD      channel
+                          DCD      ave
                   |L5.804|
-                          DCD      ||sum||
+                          DCD      ||fs||
                   |L5.808|
-                          DCD      sumchannel
+000328  2f00              DCB      "/",0
+00032a  00                DCB      0
+00032b  00                DCB      0
                   |L5.812|
-                          DCD      len
+                          DCD      DirInf
                   |L5.816|
-000330  20256400          DCB      " %d",0
-                  |L5.820|
-                          DCD      bufferSaveLen
-                  |L5.824|
-                          DCD      bufferSaveChannel
+000330  303a2f77          DCB      "0:/wirerope",0
+000334  69726572
+000338  6f706500
                   |L5.828|
+                          DCD      fileCount
+                  |L5.832|
+000340  303a7769          DCB      "0:wirerope/data_%d.csv",0
+000344  7265726f
+000348  70652f64
+00034c  6174615f
+000350  25642e63
+000354  737600  
+000357  00                DCB      0
+                  |L5.856|
+                          DCD      fileName
+                  |L5.860|
+                          DCD      fileFlag
+                  |L5.864|
+                          DCD      ||bw||
+                  |L5.868|
+                          DCD      buffer
+                  |L5.872|
+                          DCD      flagEncoder
+                  |L5.876|
+                          DCD      channel
+                  |L5.880|
+                          DCD      ||sum||
+                  |L5.884|
+                          DCD      sumchannel
+                  |L5.888|
+                          DCD      len
+                  |L5.892|
+00037c  20256400          DCB      " %d",0
+                  |L5.896|
+                          DCD      bufferSaveLen
+                  |L5.900|
+                          DCD      bufferSaveChannel
+                  |L5.904|
                           DCD      bufferSaveSum
 
                           AREA ||i.SaveBuffer||, CODE, READONLY, ALIGN=2
 
                   SaveBuffer PROC
-;;;386    
-;;;387    void SaveBuffer(void)
+;;;398    
+;;;399    void SaveBuffer(void)
 000000  b530              PUSH     {r4,r5,lr}
-;;;388    {
-;;;389        if(Mark==end)
+;;;400    {
+;;;401        if(Mark==end)
 000002  4872              LDR      r0,|L6.460|
 000004  8800              LDRH     r0,[r0,#0]  ; Mark
 000006  4972              LDR      r1,|L6.464|
 000008  f9b11000          LDRSH    r1,[r1,#0]  ; end
 00000c  4288              CMP      r0,r1
 00000e  d102              BNE      |L6.22|
-;;;390        {
-;;;391            Mark=0;
+;;;402        {
+;;;403            Mark=0;
 000010  2000              MOVS     r0,#0
 000012  496e              LDR      r1,|L6.460|
 000014  8008              STRH     r0,[r1,#0]
                   |L6.22|
-;;;392            
-;;;393        }
-;;;394        //一次54-6=48个字符
-;;;395        if(Mark<middle)
+;;;404            
+;;;405        }
+;;;406        //一次54-6=48个字符
+;;;407        if(Mark<middle)
 000016  486d              LDR      r0,|L6.460|
 000018  8800              LDRH     r0,[r0,#0]  ; Mark
 00001a  496e              LDR      r1,|L6.468|
 00001c  f9b11000          LDRSH    r1,[r1,#0]  ; middle
 000020  4288              CMP      r0,r1
 000022  da55              BGE      |L6.208|
-;;;396        {           
-;;;397            for(int i = 0; i <10; i++)
+;;;408        {           
+;;;409            for(int i = 0; i <10; i++)
 000024  2000              MOVS     r0,#0
 000026  e00b              B        |L6.64|
                   |L6.40|
-;;;398            {
-;;;399                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveLen[i];
+;;;410            {
+;;;411                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveLen[i];
 000028  496b              LDR      r1,|L6.472|
 00002a  5c0a              LDRB     r2,[r1,r0]
 00002c  496b              LDR      r1,|L6.476|
@@ -1100,13 +1139,13 @@
 000036  8061              STRH     r1,[r4,#2]
 000038  f1040109          ADD      r1,r4,#9
 00003c  54ca              STRB     r2,[r1,r3]
-00003e  1c40              ADDS     r0,r0,#1              ;397
+00003e  1c40              ADDS     r0,r0,#1              ;409
                   |L6.64|
-000040  280a              CMP      r0,#0xa               ;397
+000040  280a              CMP      r0,#0xa               ;409
 000042  dbf1              BLT      |L6.40|
-;;;400                
-;;;401            }
-;;;402            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
+;;;412                
+;;;413            }
+;;;414            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
 000044  212c              MOVS     r1,#0x2c
 000046  4865              LDR      r0,|L6.476|
 000048  8842              LDRH     r2,[r0,#2]  ; g_tAdcFifo
@@ -1116,17 +1155,17 @@
 000050  8058              STRH     r0,[r3,#2]
 000052  f1030009          ADD      r0,r3,#9
 000056  5481              STRB     r1,[r0,r2]
-;;;403            for(int j = 0; j < 6; j++) 
+;;;415            for(int j = 0; j < 6; j++) 
 000058  2000              MOVS     r0,#0
 00005a  e01d              B        |L6.152|
                   |L6.92|
-;;;404            {
-;;;405                for(int i = 1; i < 5; i++)
+;;;416            {
+;;;417                for(int i = 1; i < 5; i++)
 00005c  2101              MOVS     r1,#1
 00005e  e00e              B        |L6.126|
                   |L6.96|
-;;;406                {
-;;;407                    g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveChannel[j][i];
+;;;418                {
+;;;419                    g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveChannel[j][i];
 000060  eb000280          ADD      r2,r0,r0,LSL #2
 000064  4b5e              LDR      r3,|L6.480|
 000066  441a              ADD      r2,r2,r3
@@ -1139,12 +1178,12 @@
 000074  806a              STRH     r2,[r5,#2]
 000076  f1050209          ADD      r2,r5,#9
 00007a  5513              STRB     r3,[r2,r4]
-00007c  1c49              ADDS     r1,r1,#1              ;405
+00007c  1c49              ADDS     r1,r1,#1              ;417
                   |L6.126|
-00007e  2905              CMP      r1,#5                 ;405
+00007e  2905              CMP      r1,#5                 ;417
 000080  dbee              BLT      |L6.96|
-;;;408                }
-;;;409                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
+;;;420                }
+;;;421                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = ',';
 000082  222c              MOVS     r2,#0x2c
 000084  4955              LDR      r1,|L6.476|
 000086  884b              LDRH     r3,[r1,#2]  ; g_tAdcFifo
@@ -1154,17 +1193,17 @@
 00008e  8061              STRH     r1,[r4,#2]
 000090  f1040109          ADD      r1,r4,#9
 000094  54ca              STRB     r2,[r1,r3]
-000096  1c40              ADDS     r0,r0,#1              ;403
+000096  1c40              ADDS     r0,r0,#1              ;415
                   |L6.152|
-000098  2806              CMP      r0,#6                 ;403
+000098  2806              CMP      r0,#6                 ;415
 00009a  dbdf              BLT      |L6.92|
-;;;410            }
-;;;411            for(int i = 1; i < 6; i++)
+;;;422            }
+;;;423            for(int i = 1; i < 6; i++)
 00009c  2001              MOVS     r0,#1
 00009e  e00b              B        |L6.184|
                   |L6.160|
-;;;412            {
-;;;413                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveSum[i];
+;;;424            {
+;;;425                g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = bufferSaveSum[i];
 0000a0  4950              LDR      r1,|L6.484|
 0000a2  5c0a              LDRB     r2,[r1,r0]
 0000a4  494d              LDR      r1,|L6.476|
@@ -1175,12 +1214,12 @@
 0000ae  8061              STRH     r1,[r4,#2]
 0000b0  f1040109          ADD      r1,r4,#9
 0000b4  54ca              STRB     r2,[r1,r3]
-0000b6  1c40              ADDS     r0,r0,#1              ;411
+0000b6  1c40              ADDS     r0,r0,#1              ;423
                   |L6.184|
-0000b8  2806              CMP      r0,#6                 ;411
+0000b8  2806              CMP      r0,#6                 ;423
 0000ba  dbf1              BLT      |L6.160|
-;;;414            }               
-;;;415            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = '\n';
+;;;426            }               
+;;;427            g_tAdcFifo.sBuf1[g_tAdcFifo.usWrite1++] = '\n';
 0000bc  210a              MOVS     r1,#0xa
 0000be  4847              LDR      r0,|L6.476|
 0000c0  8842              LDRH     r2,[r0,#2]  ; g_tAdcFifo
@@ -1191,8 +1230,8 @@
 0000ca  f1030009          ADD      r0,r3,#9
 0000ce  5481              STRB     r1,[r0,r2]
                   |L6.208|
-;;;416        }
-;;;417        if(Mark >= middle && Mark < end)
+;;;428        }
+;;;429        if(Mark >= middle && Mark < end)
 0000d0  483e              LDR      r0,|L6.460|
 0000d2  8800              LDRH     r0,[r0,#0]  ; Mark
 0000d4  493f              LDR      r1,|L6.468|
@@ -1205,13 +1244,13 @@
 0000e4  f9b11000          LDRSH    r1,[r1,#0]  ; end
 0000e8  4288              CMP      r0,r1
 0000ea  da4f              BGE      |L6.396|
-;;;418        {
-;;;419            for(int i = 0; i <10; i++)
+;;;430        {
+;;;431            for(int i = 0; i <10; i++)
 0000ec  2000              MOVS     r0,#0
 0000ee  e00a              B        |L6.262|
                   |L6.240|
-;;;420            {
-;;;421                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveLen[i];
+;;;432            {
+;;;433                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveLen[i];
 0000f0  4939              LDR      r1,|L6.472|
 0000f2  5c0a              LDRB     r2,[r1,r0]
 0000f4  4939              LDR      r1,|L6.476|
@@ -1222,13 +1261,13 @@
 0000fe  80a1              STRH     r1,[r4,#4]
 000100  4939              LDR      r1,|L6.488|
 000102  54ca              STRB     r2,[r1,r3]
-000104  1c40              ADDS     r0,r0,#1              ;419
+000104  1c40              ADDS     r0,r0,#1              ;431
                   |L6.262|
-000106  280a              CMP      r0,#0xa               ;419
+000106  280a              CMP      r0,#0xa               ;431
 000108  dbf2              BLT      |L6.240|
-;;;422                
-;;;423            }
-;;;424            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
+;;;434                
+;;;435            }
+;;;436            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
 00010a  212c              MOVS     r1,#0x2c
 00010c  4833              LDR      r0,|L6.476|
 00010e  8882              LDRH     r2,[r0,#4]  ; g_tAdcFifo
@@ -1238,17 +1277,17 @@
 000116  8098              STRH     r0,[r3,#4]
 000118  4833              LDR      r0,|L6.488|
 00011a  5481              STRB     r1,[r0,r2]
-;;;425            for(int j = 0; j < 6; j++) 
+;;;437            for(int j = 0; j < 6; j++) 
 00011c  2000              MOVS     r0,#0
 00011e  e01b              B        |L6.344|
                   |L6.288|
-;;;426            {
-;;;427                for(int i = 1; i < 5; i++)
+;;;438            {
+;;;439                for(int i = 1; i < 5; i++)
 000120  2101              MOVS     r1,#1
 000122  e00d              B        |L6.320|
                   |L6.292|
-;;;428                {
-;;;429                    g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveChannel[j][i];
+;;;440                {
+;;;441                    g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveChannel[j][i];
 000124  eb000280          ADD      r2,r0,r0,LSL #2
 000128  4b2d              LDR      r3,|L6.480|
 00012a  441a              ADD      r2,r2,r3
@@ -1261,12 +1300,12 @@
 000138  80aa              STRH     r2,[r5,#4]
 00013a  4a2b              LDR      r2,|L6.488|
 00013c  5513              STRB     r3,[r2,r4]
-00013e  1c49              ADDS     r1,r1,#1              ;427
+00013e  1c49              ADDS     r1,r1,#1              ;439
                   |L6.320|
-000140  2905              CMP      r1,#5                 ;427
+000140  2905              CMP      r1,#5                 ;439
 000142  dbef              BLT      |L6.292|
-;;;430                }
-;;;431                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
+;;;442                }
+;;;443                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = ',';
 000144  222c              MOVS     r2,#0x2c
 000146  4925              LDR      r1,|L6.476|
 000148  888b              LDRH     r3,[r1,#4]  ; g_tAdcFifo
@@ -1276,17 +1315,17 @@
 000150  80a1              STRH     r1,[r4,#4]
 000152  4925              LDR      r1,|L6.488|
 000154  54ca              STRB     r2,[r1,r3]
-000156  1c40              ADDS     r0,r0,#1              ;425
+000156  1c40              ADDS     r0,r0,#1              ;437
                   |L6.344|
-000158  2806              CMP      r0,#6                 ;425
+000158  2806              CMP      r0,#6                 ;437
 00015a  dbe1              BLT      |L6.288|
-;;;432            }
-;;;433            for(int i = 1; i < 6; i++)
+;;;444            }
+;;;445            for(int i = 1; i < 6; i++)
 00015c  2001              MOVS     r0,#1
 00015e  e00a              B        |L6.374|
                   |L6.352|
-;;;434            {
-;;;435                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveSum[i];
+;;;446            {
+;;;447                g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = bufferSaveSum[i];
 000160  4920              LDR      r1,|L6.484|
 000162  5c0a              LDRB     r2,[r1,r0]
 000164  491d              LDR      r1,|L6.476|
@@ -1297,12 +1336,12 @@
 00016e  80a1              STRH     r1,[r4,#4]
 000170  491d              LDR      r1,|L6.488|
 000172  54ca              STRB     r2,[r1,r3]
-000174  1c40              ADDS     r0,r0,#1              ;433
+000174  1c40              ADDS     r0,r0,#1              ;445
                   |L6.374|
-000176  2806              CMP      r0,#6                 ;433
+000176  2806              CMP      r0,#6                 ;445
 000178  dbf2              BLT      |L6.352|
-;;;436            }               
-;;;437            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = '\n';
+;;;448            }               
+;;;449            g_tAdcFifo.sBuf2[g_tAdcFifo.usWrite2++] = '\n';
 00017a  210a              MOVS     r1,#0xa
 00017c  4817              LDR      r0,|L6.476|
 00017e  8882              LDRH     r2,[r0,#4]  ; g_tAdcFifo
@@ -1313,58 +1352,58 @@
 000188  4817              LDR      r0,|L6.488|
 00018a  5481              STRB     r1,[r0,r2]
                   |L6.396|
-;;;438        }
-;;;439    
-;;;440        Mark++;
+;;;450        }
+;;;451    
+;;;452        Mark++;
 00018c  480f              LDR      r0,|L6.460|
 00018e  8800              LDRH     r0,[r0,#0]  ; Mark
 000190  1c40              ADDS     r0,r0,#1
 000192  490e              LDR      r1,|L6.460|
 000194  8008              STRH     r0,[r1,#0]
-;;;441        
-;;;442        if(Mark == middle)
+;;;453        
+;;;454        if(Mark == middle)
 000196  4608              MOV      r0,r1
 000198  8800              LDRH     r0,[r0,#0]  ; Mark
 00019a  490e              LDR      r1,|L6.468|
 00019c  f9b11000          LDRSH    r1,[r1,#0]  ; middle
 0001a0  4288              CMP      r0,r1
 0001a2  d105              BNE      |L6.432|
-;;;443        {
-;;;444    
-;;;445            Calibration = 1;
+;;;455        {
+;;;456    
+;;;457            Calibration = 1;
 0001a4  2001              MOVS     r0,#1
 0001a6  4911              LDR      r1,|L6.492|
 0001a8  7008              STRB     r0,[r1,#0]
-;;;446            g_tAdcFifo.usWrite1 = 0;
+;;;458            g_tAdcFifo.usWrite1 = 0;
 0001aa  2000              MOVS     r0,#0
 0001ac  490b              LDR      r1,|L6.476|
 0001ae  8048              STRH     r0,[r1,#2]
                   |L6.432|
-;;;447        
-;;;448        }
-;;;449        if(Mark == end)
+;;;459        
+;;;460        }
+;;;461        if(Mark == end)
 0001b0  4806              LDR      r0,|L6.460|
 0001b2  8800              LDRH     r0,[r0,#0]  ; Mark
 0001b4  4906              LDR      r1,|L6.464|
 0001b6  f9b11000          LDRSH    r1,[r1,#0]  ; end
 0001ba  4288              CMP      r0,r1
 0001bc  d105              BNE      |L6.458|
-;;;450        {
-;;;451    
-;;;452            Calibration = 2;
+;;;462        {
+;;;463    
+;;;464            Calibration = 2;
 0001be  2002              MOVS     r0,#2
 0001c0  490a              LDR      r1,|L6.492|
 0001c2  7008              STRB     r0,[r1,#0]
-;;;453            g_tAdcFifo.usWrite2 = 0;
+;;;465            g_tAdcFifo.usWrite2 = 0;
 0001c4  2000              MOVS     r0,#0
 0001c6  4905              LDR      r1,|L6.476|
 0001c8  8088              STRH     r0,[r1,#4]
                   |L6.458|
-;;;454            
-;;;455        }
-;;;456    }
+;;;466            
+;;;467        }
+;;;468    }
 0001ca  bd30              POP      {r4,r5,pc}
-;;;457    
+;;;469    
                           ENDP
 
                   |L6.460|
@@ -1392,24 +1431,24 @@
                           REQUIRE _printf_d
                           REQUIRE _printf_int_dec
                   SaveDate PROC
-;;;357    
-;;;358    void SaveDate(void)
+;;;369    
+;;;370    void SaveDate(void)
 000000  b510              PUSH     {r4,lr}
-;;;359    {
+;;;371    {
 000002  ed2d8b08          VPUSH    {d8-d11}
-;;;360        //写字符型
-;;;361        if(biaozhi == 1)
+;;;372        //写字符型
+;;;373        if(biaozhi == 1)
 000006  483d              LDR      r0,|L7.252|
 000008  7800              LDRB     r0,[r0,#0]  ; biaozhi
 00000a  2801              CMP      r0,#1
 00000c  d171              BNE      |L7.242|
-;;;362        {
-;;;363            for (int i = 0; i < 6; i++)
+;;;374        {
+;;;375            for (int i = 0; i < 6; i++)
 00000e  2000              MOVS     r0,#0
 000010  e00e              B        |L7.48|
                   |L7.18|
-;;;364            {
-;;;365                channel[i] = g_tAD7606.sNowAdc[i]*5000/32768;
+;;;376            {
+;;;377                channel[i] = g_tAD7606.sNowAdc[i]*5000/32768;
 000012  4a3b              LDR      r2,|L7.256|
 000014  f8322010          LDRH     r2,[r2,r0,LSL #1]
 000018  f2413388          MOV      r3,#0x1388
@@ -1419,12 +1458,12 @@
 000026  13d2              ASRS     r2,r2,#15
 000028  4b36              LDR      r3,|L7.260|
 00002a  f8232010          STRH     r2,[r3,r0,LSL #1]
-00002e  1c40              ADDS     r0,r0,#1              ;363
+00002e  1c40              ADDS     r0,r0,#1              ;375
                   |L7.48|
-000030  2806              CMP      r0,#6                 ;363
+000030  2806              CMP      r0,#6                 ;375
 000032  dbee              BLT      |L7.18|
-;;;366            }
-;;;367            sumchannel = channel[0]+channel[1]+channel[2]+channel[3]+channel[4]+channel[5];
+;;;378            }
+;;;379            sumchannel = channel[0]+channel[1]+channel[2]+channel[3]+channel[4]+channel[5];
 000034  4833              LDR      r0,|L7.260|
 000036  8800              LDRH     r0,[r0,#0]  ; channel
 000038  4932              LDR      r1,|L7.260|
@@ -1445,7 +1484,7 @@
 000056  b200              SXTH     r0,r0
 000058  492b              LDR      r1,|L7.264|
 00005a  8008              STRH     r0,[r1,#0]
-;;;368            num=(circle_count-1)*2400+TIM_GetCounter(TIM4);
+;;;380            num=(circle_count-1)*2400+TIM_GetCounter(TIM4);
 00005c  482b              LDR      r0,|L7.268|
 00005e  f7fffffe          BL       TIM_GetCounter
 000062  492b              LDR      r1,|L7.272|
@@ -1456,7 +1495,7 @@
 000070  eb001041          ADD      r0,r0,r1,LSL #5
 000074  4927              LDR      r1,|L7.276|
 000076  6008              STR      r0,[r1,#0]  ; num
-;;;369            len = num*80*3.14/4/600;
+;;;381            len = num*80*3.14/4/600;
 000078  6809              LDR      r1,[r1,#0]  ; num
 00007a  eb010181          ADD      r1,r1,r1,LSL #2
 00007e  0108              LSLS     r0,r1,#4
@@ -1473,19 +1512,19 @@
 0000a8  f7fffffe          BL       __aeabi_d2iz
 0000ac  4920              LDR      r1,|L7.304|
 0000ae  6008              STR      r0,[r1,#0]  ; len
-;;;370    
-;;;371            sprintf(bufferSaveLen, " %d" , len);
+;;;382    
+;;;383            sprintf(bufferSaveLen, " %d" , len);
 0000b0  4608              MOV      r0,r1
 0000b2  a120              ADR      r1,|L7.308|
 0000b4  6802              LDR      r2,[r0,#0]  ; len
 0000b6  4820              LDR      r0,|L7.312|
 0000b8  f7fffffe          BL       __2sprintf
-;;;372            for(int i = 0; i < 6; i++)
+;;;384            for(int i = 0; i < 6; i++)
 0000bc  2400              MOVS     r4,#0
 0000be  e00a              B        |L7.214|
                   |L7.192|
-;;;373            {
-;;;374               sprintf(bufferSaveChannel[i], " %d" , channel[i]); 
+;;;385            {
+;;;386               sprintf(bufferSaveChannel[i], " %d" , channel[i]); 
 0000c0  4910              LDR      r1,|L7.260|
 0000c2  f9312014          LDRSH    r2,[r1,r4,LSL #1]
 0000c6  eb040184          ADD      r1,r4,r4,LSL #2
@@ -1493,34 +1532,34 @@
 0000cc  18c8              ADDS     r0,r1,r3
 0000ce  a119              ADR      r1,|L7.308|
 0000d0  f7fffffe          BL       __2sprintf
-0000d4  1c64              ADDS     r4,r4,#1              ;372
+0000d4  1c64              ADDS     r4,r4,#1              ;384
                   |L7.214|
-0000d6  2c06              CMP      r4,#6                 ;372
+0000d6  2c06              CMP      r4,#6                 ;384
 0000d8  dbf2              BLT      |L7.192|
-;;;375            }
-;;;376            sprintf(bufferSaveSum, " %d" , sumchannel);
+;;;387            }
+;;;388            sprintf(bufferSaveSum, " %d" , sumchannel);
 0000da  480b              LDR      r0,|L7.264|
 0000dc  f9b02000          LDRSH    r2,[r0,#0]  ; sumchannel
 0000e0  a114              ADR      r1,|L7.308|
 0000e2  4817              LDR      r0,|L7.320|
 0000e4  f7fffffe          BL       __2sprintf
-;;;377            
-;;;378            SaveBuffer();     
+;;;389            
+;;;390            SaveBuffer();     
 0000e8  f7fffffe          BL       SaveBuffer
-;;;379            biaozhi = 0;
+;;;391            biaozhi = 0;
 0000ec  2000              MOVS     r0,#0
 0000ee  4903              LDR      r1,|L7.252|
 0000f0  7008              STRB     r0,[r1,#0]
                   |L7.242|
-;;;380    
-;;;381        }
-;;;382    	SaveFile();
+;;;392    
+;;;393        }
+;;;394    	SaveFile();
 0000f2  f7fffffe          BL       SaveFile
-;;;383    
-;;;384    }
+;;;395    
+;;;396    }
 0000f6  ecbd8b08          VPOP     {d8-d11}
 0000fa  bd10              POP      {r4,pc}
-;;;385    
+;;;397    
                           ENDP
 
                   |L7.252|
@@ -1560,71 +1599,71 @@
                           AREA ||i.SaveFile||, CODE, READONLY, ALIGN=2
 
                   SaveFile PROC
-;;;457    
-;;;458    void SaveFile(void)
+;;;469    
+;;;470    void SaveFile(void)
 000000  b510              PUSH     {r4,lr}
-;;;459    {
-;;;460        if(Calibration == 1)
+;;;471    {
+;;;472        if(Calibration == 1)
 000002  481a              LDR      r0,|L8.108|
 000004  7800              LDRB     r0,[r0,#0]  ; Calibration
 000006  2801              CMP      r0,#1
 000008  d115              BNE      |L8.54|
-;;;461        {
-;;;462            f_lseek(&file,f_size(&file));
+;;;473        {
+;;;474            f_lseek(&file,f_size(&file));
 00000a  4819              LDR      r0,|L8.112|
 00000c  68c1              LDR      r1,[r0,#0xc]  ; file
 00000e  f7fffffe          BL       f_lseek
-;;;463            f_write(&file, g_tAdcFifo.sBuf1, sizeof(g_tAdcFifo.sBuf1), &bw);
+;;;475            f_write(&file, g_tAdcFifo.sBuf1, sizeof(g_tAdcFifo.sBuf1), &bw);
 000012  4b18              LDR      r3,|L8.116|
 000014  f44f5200          MOV      r2,#0x2000
 000018  4917              LDR      r1,|L8.120|
 00001a  4815              LDR      r0,|L8.112|
 00001c  f7fffffe          BL       f_write
-;;;464            f_sync(&file);
+;;;476            f_sync(&file);
 000020  4813              LDR      r0,|L8.112|
 000022  f7fffffe          BL       f_sync
-;;;465            memset(g_tAdcFifo.sBuf1,0,sizeof(g_tAdcFifo.sBuf1));
+;;;477            memset(g_tAdcFifo.sBuf1,0,sizeof(g_tAdcFifo.sBuf1));
 000026  f44f5100          MOV      r1,#0x2000
 00002a  4813              LDR      r0,|L8.120|
 00002c  f7fffffe          BL       __aeabi_memclr
-;;;466            Calibration = 0;
+;;;478            Calibration = 0;
 000030  2000              MOVS     r0,#0
 000032  490e              LDR      r1,|L8.108|
 000034  7008              STRB     r0,[r1,#0]
                   |L8.54|
-;;;467        }
-;;;468        if(Calibration == 2)
+;;;479        }
+;;;480        if(Calibration == 2)
 000036  480d              LDR      r0,|L8.108|
 000038  7800              LDRB     r0,[r0,#0]  ; Calibration
 00003a  2802              CMP      r0,#2
 00003c  d115              BNE      |L8.106|
-;;;469        {
-;;;470            f_lseek(&file,f_size(&file));
+;;;481        {
+;;;482            f_lseek(&file,f_size(&file));
 00003e  480c              LDR      r0,|L8.112|
 000040  68c1              LDR      r1,[r0,#0xc]  ; file
 000042  f7fffffe          BL       f_lseek
-;;;471            f_write(&file, g_tAdcFifo.sBuf2, sizeof(g_tAdcFifo.sBuf2), &bw);
+;;;483            f_write(&file, g_tAdcFifo.sBuf2, sizeof(g_tAdcFifo.sBuf2), &bw);
 000046  4b0b              LDR      r3,|L8.116|
 000048  f44f5200          MOV      r2,#0x2000
 00004c  490b              LDR      r1,|L8.124|
 00004e  4808              LDR      r0,|L8.112|
 000050  f7fffffe          BL       f_write
-;;;472            f_sync(&file);
+;;;484            f_sync(&file);
 000054  4806              LDR      r0,|L8.112|
 000056  f7fffffe          BL       f_sync
-;;;473            memset(g_tAdcFifo.sBuf2,0,sizeof(g_tAdcFifo.sBuf2));
+;;;485            memset(g_tAdcFifo.sBuf2,0,sizeof(g_tAdcFifo.sBuf2));
 00005a  f44f5100          MOV      r1,#0x2000
 00005e  4807              LDR      r0,|L8.124|
 000060  f7fffffe          BL       __aeabi_memclr
-;;;474            Calibration = 0;
+;;;486            Calibration = 0;
 000064  2000              MOVS     r0,#0
 000066  4901              LDR      r1,|L8.108|
 000068  7008              STRB     r0,[r1,#0]
                   |L8.106|
-;;;475        }
-;;;476    }
+;;;487        }
+;;;488    }
 00006a  bd10              POP      {r4,pc}
-;;;477    
+;;;489    
                           ENDP
 
                   |L8.108|
@@ -1641,69 +1680,69 @@
                           AREA ||i.delay_us||, CODE, READONLY, ALIGN=1
 
                   delay_us PROC
-;;;53     
-;;;54     void delay_us(uint32_t delay_us)
+;;;56     
+;;;57     void delay_us(uint32_t delay_us)
 000000  b50c              PUSH     {r2,r3,lr}
-;;;55     {
-;;;56       volatile unsigned int num;
-;;;57       volatile unsigned int t;
-;;;58     
-;;;59       for (num = 0; num < delay_us; num++)
+;;;58     {
+;;;59       volatile unsigned int num;
+;;;60       volatile unsigned int t;
+;;;61     
+;;;62       for (num = 0; num < delay_us; num++)
 000002  2100              MOVS     r1,#0
 000004  9101              STR      r1,[sp,#4]
 000006  e00b              B        |L9.32|
                   |L9.8|
-;;;60       {
-;;;61         t = 11;
+;;;63       {
+;;;64         t = 11;
 000008  210b              MOVS     r1,#0xb
 00000a  9100              STR      r1,[sp,#0]
-;;;62         while (t != 0)
+;;;65         while (t != 0)
 00000c  e002              B        |L9.20|
                   |L9.14|
-;;;63         {
-;;;64           t--;
+;;;66         {
+;;;67           t--;
 00000e  9900              LDR      r1,[sp,#0]
 000010  1e49              SUBS     r1,r1,#1
 000012  9100              STR      r1,[sp,#0]
                   |L9.20|
-000014  9900              LDR      r1,[sp,#0]            ;62
-000016  2900              CMP      r1,#0                 ;62
+000014  9900              LDR      r1,[sp,#0]            ;65
+000016  2900              CMP      r1,#0                 ;65
 000018  d1f9              BNE      |L9.14|
-00001a  9901              LDR      r1,[sp,#4]            ;59
-00001c  1c49              ADDS     r1,r1,#1              ;59
-00001e  9101              STR      r1,[sp,#4]            ;59
+00001a  9901              LDR      r1,[sp,#4]            ;62
+00001c  1c49              ADDS     r1,r1,#1              ;62
+00001e  9101              STR      r1,[sp,#4]            ;62
                   |L9.32|
-000020  9901              LDR      r1,[sp,#4]            ;59
-000022  4281              CMP      r1,r0                 ;59
+000020  9901              LDR      r1,[sp,#4]            ;62
+000022  4281              CMP      r1,r0                 ;62
 000024  d3f0              BCC      |L9.8|
-;;;65         }
-;;;66       }
-;;;67     }
+;;;68         }
+;;;69       }
+;;;70     }
 000026  bd0c              POP      {r2,r3,pc}
-;;;68     
+;;;71     
                           ENDP
 
 
                           AREA ||i.main||, CODE, READONLY, ALIGN=2
 
                   main PROC
-;;;68     
-;;;69     int main(void)
+;;;71     
+;;;72     int main(void)
 000000  b508              PUSH     {r3,lr}
-;;;70     {
-;;;71     	delay_us(100000);//短暂延时，确保外设供电	
+;;;73     {
+;;;74     	delay_us(100000);//短暂延时，确保外设供电	
 000002  4813              LDR      r0,|L10.80|
 000004  f7fffffe          BL       delay_us
-;;;72     	bsp_Init();
+;;;75     	bsp_Init();
 000008  f7fffffe          BL       bsp_Init
-;;;73     	#ifdef USE_USB_OTG_FS
-;;;74     		USBH_Init(&USB_OTG_Core,
-;;;75     			USB_OTG_FS_CORE_ID,
-;;;76                 &USB_Host,
-;;;77                 &USBH_MSC_cb,
-;;;78                 &USR_cb);
-;;;79     	#else
-;;;80     		USBH_Init(&USB_OTG_Core,
+;;;76     	#ifdef USE_USB_OTG_FS
+;;;77     		USBH_Init(&USB_OTG_Core,
+;;;78     			USB_OTG_FS_CORE_ID,
+;;;79                 &USB_Host,
+;;;80                 &USBH_MSC_cb,
+;;;81                 &USR_cb);
+;;;82     	#else
+;;;83     		USBH_Init(&USB_OTG_Core,
 00000c  4811              LDR      r0,|L10.84|
 00000e  4b12              LDR      r3,|L10.88|
 000010  4a12              LDR      r2,|L10.92|
@@ -1711,52 +1750,52 @@
 000014  9000              STR      r0,[sp,#0]
 000016  4812              LDR      r0,|L10.96|
 000018  f7fffffe          BL       USBH_Init
-;;;81     			USB_OTG_HS_CORE_ID,
-;;;82                 &USB_Host,
-;;;83                 &USBH_MSC_cb,
-;;;84                 &USR_cb);
-;;;85     	#endif
-;;;86     	bsp_InitAD7606();	/* 配置AD7606所用的GPIO */
+;;;84     			USB_OTG_HS_CORE_ID,
+;;;85                 &USB_Host,
+;;;86                 &USBH_MSC_cb,
+;;;87                 &USR_cb);
+;;;88     	#endif
+;;;89     	bsp_InitAD7606();	/* 配置AD7606所用的GPIO */
 00001c  f7fffffe          BL       bsp_InitAD7606
-;;;87     	AD7606_SetOS(AD_OS_NO);		/* 无过采样 */
+;;;90     	AD7606_SetOS(AD_OS_NO);		/* 无过采样 */
 000020  2000              MOVS     r0,#0
 000022  f7fffffe          BL       AD7606_SetOS
-;;;88     	AD7606_SetInputRange(0);	/* 0表示输入量程为正负5V, 1表示正负10V */
+;;;91     	AD7606_SetInputRange(0);	/* 0表示输入量程为正负5V, 1表示正负10V */
 000026  2000              MOVS     r0,#0
 000028  f7fffffe          BL       AD7606_SetInputRange
-;;;89     	AD7606_StartConvst();		/* 启动1次转换 */
+;;;92     	AD7606_StartConvst();		/* 启动1次转换 */
 00002c  f7fffffe          BL       AD7606_StartConvst
-;;;90     	ucRefresh = 0;
+;;;93     	ucRefresh = 0;
 000030  2000              MOVS     r0,#0
 000032  490c              LDR      r1,|L10.100|
 000034  7008              STRB     r0,[r1,#0]
-;;;91     	Encoder_Init();	
+;;;94     	Encoder_Init();	
 000036  f7fffffe          BL       Encoder_Init
-;;;92         
-;;;93     	while (1)
+;;;95         
+;;;96     	while (1)
 00003a  e007              B        |L10.76|
                   |L10.60|
-;;;94     	{
-;;;95     		bsp_Idle();		/* 空闲时执行的函数,比如喂狗. 在bsp.c中 */
+;;;97     	{
+;;;98     		bsp_Idle();		/* 空闲时执行的函数,比如喂狗. 在bsp.c中 */
 00003c  f7fffffe          BL       bsp_Idle
-;;;96             USBH_Process(&USB_OTG_Core, &USB_Host);
+;;;99             USBH_Process(&USB_OTG_Core, &USB_Host);
 000040  4906              LDR      r1,|L10.92|
 000042  4807              LDR      r0,|L10.96|
 000044  f7fffffe          BL       USBH_Process
-;;;97             
-;;;98             EncoderMode();
+;;;100            
+;;;101            EncoderMode();
 000048  f7fffffe          BL       EncoderMode
                   |L10.76|
 00004c  e7f6              B        |L10.60|
-;;;99             
-;;;100            //更换需在encoder文件中更改计数
-;;;101            //FreqMode();
 ;;;102            
-;;;103    
-;;;104        }
-;;;105    
-;;;106    }
-;;;107    
+;;;103            //更换需在encoder文件中更改计数
+;;;104            //FreqMode();
+;;;105            
+;;;106    
+;;;107        }
+;;;108    
+;;;109    }
+;;;110    
                           ENDP
 
 00004e  0000              DCW      0x0000
@@ -1793,6 +1832,8 @@
                           %        552
                   DirInf
                           %        36
+                  fileName
+                          %        40
 
                           AREA ||.data||, DATA, ALIGN=2
 
@@ -1840,6 +1881,10 @@
 000050  00000000          DCB      0x00,0x00,0x00,0x00
                   ||bw||
                           DCD      0x00000000
+                  fileCount
+000058  0000              DCW      0x0000
+                  fileFlag
+00005a  0000              DCB      0x00,0x00
 
 ;*** Start embedded assembler ***
 

@@ -247,7 +247,7 @@
 ;;;446    {
 000002  b089              SUB      sp,sp,#0x24
 000004  4604              MOV      r4,r0
-;;;447    	/* 配置PH2为复用功能，TIM5_CH3 . 执行后bsp_InitAD7606()对PH2口线的配置将失效 */
+;;;447    	/* 配置PH12为复用功能，TIM5_CH3 . 执行后bsp_InitAD7606()对PH2口线的配置将失效 */
 ;;;448    	{
 ;;;449    		GPIO_InitTypeDef GPIO_InitStructure;
 ;;;450    

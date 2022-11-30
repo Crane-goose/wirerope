@@ -444,7 +444,7 @@ void AD7606_ReadNowAdc(void)
 */
 void AD7606_EnterAutoMode(uint32_t _ulFreq)
 {
-	/* 配置PH2为复用功能，TIM5_CH3 . 执行后bsp_InitAD7606()对PH2口线的配置将失效 */
+	/* 配置PH12为复用功能，TIM5_CH3 . 执行后bsp_InitAD7606()对PH2口线的配置将失效 */
 	{
 		GPIO_InitTypeDef GPIO_InitStructure;
 

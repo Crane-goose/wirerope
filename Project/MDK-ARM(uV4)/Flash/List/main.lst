@@ -43991,6 +43991,9 @@ NFATFS fs;
 NFIL file;
 NDIR DirInf;
 Nuint32_t bw;
+Nchar fileName[40];
+Nint16_t fileCount = 0;
+Nint16_t fileFlag;
 N
 Nvoid delay_us(uint32_t delay_us)
 N{
@@ -44134,8 +44137,17 @@ N                ucFifoMode = 2;
 N                f_mount(FS_USB, &fs);
 X                f_mount(0, &fs);
 N                f_opendir(&DirInf, "/");
-N                f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
-X                f_open(&file, "采集数据.csv", 0x10 | 0x02);
+N                f_mkdir("0:/wirerope");
+N                
+N                do
+N                {
+N                    sprintf((char*)fileName,"0:wirerope/data_%d.csv",fileCount++);
+N                    fileFlag =  f_open(&file, (char*)fileName, FA_CREATE_NEW | FA_WRITE);
+X                    fileFlag =  f_open(&file, (char*)fileName, 0x04 | 0x02);
+N                    
+N                }while(fileFlag != FR_OK);               
+N                
+N                //f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
 N                f_lseek(&file,f_size(&file));
 X                f_lseek(&file,((&file)->fsize));
 N                f_write(&file,  buffer, sizeof(buffer), &bw);

@@ -50,6 +50,9 @@ FATFS fs;
 FIL file;
 DIR DirInf;
 uint32_t bw;
+char fileName[40];
+int16_t fileCount = 0;
+int16_t fileFlag;
 
 void delay_us(uint32_t delay_us)
 {
@@ -192,7 +195,16 @@ void HandleDateEncoder(void)
                 ucFifoMode = 2;	                                
                 f_mount(FS_USB, &fs);
                 f_opendir(&DirInf, "/");
-                f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
+                f_mkdir("0:/wirerope");
+                
+                do
+                {
+                    sprintf((char*)fileName,"0:wirerope/data_%d.csv",fileCount++);
+                    fileFlag =  f_open(&file, (char*)fileName, FA_CREATE_NEW | FA_WRITE);
+                    
+                }while(fileFlag != FR_OK);               
+                
+                //f_open(&file, "采集数据.csv", FA_OPEN_ALWAYS | FA_WRITE);
                 f_lseek(&file,f_size(&file));
                 f_write(&file,  buffer, sizeof(buffer), &bw);
                 f_sync(&file);                
